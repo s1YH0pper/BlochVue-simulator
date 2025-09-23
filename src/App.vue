@@ -1,7 +1,7 @@
 <template>
     <SceneManager ref="sceneManagerRef" @scene-ready="handleSceneReady" />
     <ControlPanel :sceneContext="sceneContext" @panel-ready="handlePanelReady" />
-    <UIEvents @action="handleAction" />
+    <UIEvents />
     <el-divider />
 </template>
 
@@ -40,9 +40,7 @@ function handlePanelReady(ctx) {
     console.log('Panel initialized', ctx)
     console.log(panelContext.value)
 }
-function handleAction(cmd) {
-    console.log(cmd)
-}
+
 watch([sceneContext, panelContext], ([scene, panel]) => {
     if (scene && panel) {
         setBlochContext({ guiManager: panelContext.value, sceneManager: sceneContext.value })
