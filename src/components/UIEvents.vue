@@ -1,21 +1,26 @@
 <template>
     <div class="event-menu">
         <!-- Presets -->
-        <ConfigSplitButton label="Presets" :options="['Precession', '平衡态', 'Inhomogeneity']" @action="handleAction" />
+        <ConfigSplitButton label="Presets"
+            :options="['Precession', '平衡态', 'Inhomogeneity', 'Mixed matter', '弱梯度', '强梯度', '结构', 'Ensemble', '平面', 'Save']"
+            @action="handleAction" />
 
         <!-- ExcHard -->
-        <ConfigSplitButton label="ExcHard" :options="['90°ₓ 硬脉冲', '90°ʸ 硬脉冲', '30°ₓ 硬脉冲', '30°ʸ 硬脉冲']"
+        <ConfigSplitButton label="ExcHard"
+            :options="['90°ₓ 硬脉冲', '90°ʸ 硬脉冲', '80°ʸ 硬脉冲', '30°ₓ 硬脉冲', '30°ʸ 硬脉冲', '90°ₓ sinch']"
             @action="handleAction" />
 
         <!-- Soft -->
-        <ConfigSplitButton label="Soft" :options="['90°ₓ 软脉冲', '90°ʸ 软脉冲', '30°ₓ 软脉冲', '30°ʸ 软脉冲']"
+        <ConfigSplitButton label="Soft"
+            :options="['90°ₓ 软脉冲', '90°ʸ 软脉冲', '30°ₓ 软脉冲', '30°ʸ 软脉冲', '90°ₓ sincs', '180°ʸ sincs']"
             @action="handleAction" />
 
         <!-- Refocus -->
-        <ConfigSplitButton label="Refocus" :options="['Gx refocus', 'Gx pulse', 'Gy pulse']" @action="handleAction" />
+        <ConfigSplitButton label="Refocus" :options="['180°ʸ', '180°ₓ', '160°ʸ', '160°ₓ']" @action="handleAction" />
 
         <!-- Spoil -->
-        <ConfigSplitButton label="Spoil" :options="['扰相']" @action="handleAction" />
+        <ConfigSplitButton label="Spoil" :options="['扰相', 'Gx refocus', 'Gx pulse', 'Gy pulse']"
+            @action="handleAction" />
 
         <!-- RepExc -->
         <ConfigSplitButton label="RepExc" :options="[
