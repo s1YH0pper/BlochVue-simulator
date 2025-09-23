@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps({
     label: { type: String, required: true },
@@ -41,4 +41,8 @@ watch(
     () => props.label,
     (val) => (currentLabel.value = val)
 );
+
+onMounted(() => {
+    currentLabel.value = props.options[0];
+});
 </script>
