@@ -12,7 +12,7 @@ import { useStateStore, useAppStateStore } from '@/stores/state'
 
 const emit = defineEmits(["panel-ready"])
 
-const props = defineProps(["sceneContext"])
+const props = defineProps(["sceneContext", "fidContext"])
 
 // 响应式引用
 const guiContainer = ref()
@@ -152,22 +152,22 @@ const addImageViewControls = (cFolder, createFromFolder) => {
                 .add(state, "viewMx")
                 .name("Mx(实时)")
                 .onChange(() => {
-                    if (state.viewMx) LABEL.MxLabelIdent.show()
-                    else LABEL.MxLabelIdent.hide()
+                    if (state.viewMx) props.fidContext.mxRef.style.display = "block"
+                    else props.fidContext.mxRef.style.display = "none"
                 })
             guiFolder
                 .add(state, "viewMxy")
                 .name("|Mxy|(最大)")
                 .onChange(() => {
-                    if (state.viewMxy) LABEL.MxyLabelIdent.show()
-                    else LABEL.MxyLabelIdent.hide()
+                    if (state.viewMxy) props.fidContext.mxyRef.style.display = "block"
+                    else props.fidContext.mxyRef.style.display = "none"
                 })
             guiFolder
                 .add(state, "viewMz")
                 .name("Mz(纵向)")
                 .onChange(() => {
-                    if (state.viewMz) LABEL.MzLabelIdent.show()
-                    else LABEL.MzLabelIdent.hide()
+                    if (state.viewMz) props.fidContext.mzRef.style.display = "block"
+                    else props.fidContext.mzRef.style.display = "none"
                 })
         },
         cFolder,

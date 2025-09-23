@@ -4,7 +4,7 @@ import { LABEL } from "@/config"
 import { useStateStore, useAppStateStore } from "@/stores/state"
 import { useUIEvents } from "@/composables/useUIEvents";
 
-export function useSampleManager(sceneManager) {
+export function useSampleManager(sceneManager, fidManager) {
     const state = useStateStore()
     const appState = useAppStateStore()
     const buttonAction = useUIEvents()
@@ -141,14 +141,14 @@ export function useSampleManager(sceneManager) {
                 : sceneManager.floorMaterial
         sceneManager.initShadowMaterials(sceneManager.floor.material)
 
-        // // FID标签显示/隐藏
-        // state.viewMx ? MxLabelIdent.show() : MxLabelIdent.hide()
-        // state.viewMz ? MzLabelIdent.show() : MzLabelIdent.hide()
-        // state.viewMxy ? MxyLabelIdent.show() : MxyLabelIdent.hide()
+        // FID标签显示/隐藏
+        fidManager.mxRef.style.display = state.viewMx ? "block" : "none";
+        fidManager.mzRef.style.display = state.viewMz ? "block" : "none";
+        fidManager.mxyRef.style.display = state.viewMxy ? "block" : "none";
 
-        // // FID曲线清理
-        // fidManager.curveBlue.forEach((_, index) => (fidManager.curveBlue[index] = 0))
-        // fidManager.curveGreen.forEach((_, index) => (fidManager.curveGreen[index] = 0))
+        // FID曲线清理
+        fidManager.curves.blue.values.forEach((_, index) => (fidManager.curves.blue.values[index] = 0))
+        fidManager.curves.green.values.forEach((_, index) => (fidManager.curves.green.values[index] = 0))
     }
 
     return {

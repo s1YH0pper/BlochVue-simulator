@@ -1,8 +1,9 @@
 <template>
     <SceneManager ref="sceneManagerRef" @scene-ready="handleSceneReady" />
-    <ControlPanel :sceneContext="sceneContext" @panel-ready="handlePanelReady" />
+    <ControlPanel :sceneContext="sceneContext" :fidContext="fidContext" @panel-ready="handlePanelReady" />
     <UIEvents />
     <el-divider />
+    <FIDChart @FID-ready="handleFIDReady" />
 </template>
 
 <script setup>
@@ -10,6 +11,7 @@ import { ref, onMounted, watch } from 'vue'
 import SceneManager from '@/components/SceneManager.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
 import UIEvents from "@/components/UIEvents.vue";
+import FIDChart from "@/components/FIDChart.vue";
 import { AnimationManager } from '@/manager/AnimationManager'
 import { setBlochContext, PhysicalParam } from "@/Physics/BlochCore";
 import { bindRenderContext, updateB1AndIsochromats } from "@/Physics/BlochRender";
@@ -21,6 +23,7 @@ const sceneManagerRef = ref(null)
 // 保存初始化上下文
 const sceneContext = ref(null)
 const panelContext = ref(null)
+const fidContext = ref(null)
 
 const state = useStateStore()
 const appState = useAppStateStore()
@@ -41,6 +44,10 @@ function handlePanelReady(ctx) {
     console.log(panelContext.value)
 }
 
+function handleFIDReady(ctx) {
+    fidContext.value = ctx
+}
+
 watch([sceneContext, panelContext], ([scene, panel]) => {
     if (scene && panel) {
         setBlochContext({ guiManager: panelContext.value, sceneManager: sceneContext.value })
@@ -51,7 +58,7 @@ watch([sceneContext, panelContext], ([scene, panel]) => {
 onMounted(() => {
     state.Sample = "Precession"
     appState.trigSampleChange = true
-    const { sampleChange } = useSampleManager(sceneContext.value)
+    const { sampleChange } = useSampleManager(sceneContext.value, fidContext.value)
     const mainLoop = (dt) => {
         if (dt > 0.1) { return }
         appState.guiTimeSinceUpdate += dt;
@@ -64,7 +71,7 @@ onMounted(() => {
             appState.updateTimeDataAndFramePhase(dt, state);
             const { B1vec, B1mag, Mtot, showTotalCurve, isochromatData } = PhysicalParam(dt);
             updateB1AndIsochromats(B1vec, B1mag, isochromatData);
-            // fidManager.updateFidCurves(isochromatData, Mtot, showTotalCurve, state);
+            fidContext.value.updateFidCurves(isochromatData, Mtot, showTotalCurve, state);
             sceneContext.value.scene.rotation.z = appState.framePhase;
         }
         sceneContext.value.render()
