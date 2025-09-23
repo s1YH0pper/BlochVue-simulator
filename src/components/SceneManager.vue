@@ -169,7 +169,7 @@ const addToScene = (obj) => {
 
 // 从场景移除
 const removeFromScene = (obj) => {
-    scene.remove(obj)
+    obj.parent.remove(obj)
 }
 
 // 渲染场景
