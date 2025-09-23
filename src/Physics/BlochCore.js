@@ -20,6 +20,7 @@ function setBlochContext({ guiManager, sceneManager }) {
 }
 
 function RFconst(B1, B1freq) {
+    const { state, appState } = BlochContext;
     let phase = B1freq * state.tSinceRF - state.phi1 + appState.framePhase0;
     return [new THREE.Vector3(B1 * Math.cos(phase), -B1 * Math.sin(phase), 0.), B1];
 }
