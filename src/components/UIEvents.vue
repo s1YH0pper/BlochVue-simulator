@@ -65,5 +65,8 @@ function handleAction(cmd) {
     gap: 8px;
     flex-wrap: wrap;
     align-items: center;
+    position: absolute;
+    bottom: 3%;
+    z-index: 20;
 }
 </style>
