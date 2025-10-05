@@ -30,7 +30,7 @@ export const CONFIG = {
     hideWhenSelected: false, // 从场景子菜单中移除所选场景标签
     doStats: false, // 帧速率统计
     addAxisHelper: false, // 添加轴辅助器
-    threeShadow: true, // 让Three.js处理阴影
+    threeShadow: false, // 让Three.js处理阴影
     myShadow: true // 手动绘制的阴影
 }
 
