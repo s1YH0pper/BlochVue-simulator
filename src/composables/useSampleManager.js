@@ -39,50 +39,42 @@ export function useSampleManager(sceneManager, fidManager) {
                 sampleObj = Object.assign(sampleObj, scenes.Precession());
                 state.Sample = '1 isochromate';
                 appState.frameFixed = false;
-                // presets.css('color', '#bbbbbb');
                 break;
             case '平衡态':
                 sampleObj = Object.assign(sampleObj, scenes.Equilibrium());
                 state.Sample = '1 isochromate';
                 appState.frameFixed = false;
-                presets.css('color', '#ffffff');
                 break;
             case 'Inhomogeneity':
                 sampleObj = Object.assign(sampleObj, scenes.Inhomogeneity());
                 state.Sample = '9 isochromates';
                 appState.frameFixed = false;
-                presets.css('color', '#ffffff');
                 break;
             case 'Ensemble':
                 sampleObj = Object.assign(sampleObj, scenes.Ensemble());
                 state.Sample = 'Thermal ensemble';
                 state.curveScale = 2;
                 appState.frameFixed = false;
-                presets.css('color', '#ffffff');
                 break;
             case '弱梯度':
                 sampleObj = Object.assign(sampleObj, scenes.WeakGradient());
                 appState.frameFixed = true;
                 state.Sample = 'Line';
-                presets.css('color', '#ffffff');
                 break;
             case '强梯度':
                 sampleObj = Object.assign(sampleObj, scenes.StrongGradient(true));
                 appState.frameFixed = true;
                 state.Sample = 'Line, dense';
-                presets.css('color', '#ffffff');
                 break;
             case '结构':
                 sampleObj = Object.assign(sampleObj, scenes.StrongGradient(false));
                 appState.frameFixed = true;
                 state.Sample = 'Line, structured';
-                presets.css('color', '#ffffff');
                 break;
             case 'Mixed matter':
                 sampleObj = Object.assign(sampleObj, scenes.MixedMatter());
                 state.Sample = '3 substances';
                 appState.frameFixed = false;
-                presets.css('color', '#ffffff');
                 break;
             /* 示例更改: */
             case '1 isochromate':

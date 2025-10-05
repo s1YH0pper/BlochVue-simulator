@@ -55,14 +55,10 @@ export function useUIEvents() {
             case "180°ʸ sincs": RFpulse('sinc', Math.PI, -Math.PI / 2, 1.6); break;
 
             // spoil
-            case "扰相": $("#Presets").css('color', '#bbbbbb');
-                spoil(); break;
-            case "Gx refocus": $("#Presets").css('color', '#bbbbbb');
-                if (appState.frameFixed) gradRefocus(); break;
-            case "Gx pulse": $("#Presets").css('color', '#bbbbbb');
-                if (appState.frameFixed) gradPulse(2); break; // 任何区域
-            case "Gy pulse": $("#Presets").css('color', '#bbbbbb');
-                if (appState.frameFixed) gradPulse(2, Math.PI / 2); break; // 任何区域
+            case "扰相": spoil(); break;
+            case "Gx refocus": if (appState.frameFixed) gradRefocus(); break;
+            case "Gx pulse": if (appState.frameFixed) gradPulse(2); break; // 任何区域
+            case "Gy pulse": if (appState.frameFixed) gradPulse(2, Math.PI / 2); break; // 任何区域
 
             // repeat excute action
             case "Non-rep. exc.":

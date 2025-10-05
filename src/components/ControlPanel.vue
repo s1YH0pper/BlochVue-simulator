@@ -366,7 +366,6 @@ const guiUpdate = (sampleChange) => {
         }
     }
 
-    // $("#Presets").css('color', '#bbbbbb')
     if (!updateFolder)
         guiFolderFlags[cFolder] = !(guiFolderFlags[cFolder])
 
