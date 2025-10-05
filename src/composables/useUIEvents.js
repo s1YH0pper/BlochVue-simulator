@@ -104,6 +104,12 @@ export function useUIEvents() {
                     ES / 2);
                 appState.restartRepIfSampleChange = true; // 更改样本后重新开始循环
                 break;
+
+            // pause action
+            case "||":
+                appState.paused = true;
+                break;
+            case "▶": break;
             default:
                 console.warn("未处理的按钮命令:", label)
         }

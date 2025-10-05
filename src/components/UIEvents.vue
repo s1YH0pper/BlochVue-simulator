@@ -53,6 +53,7 @@ const emit = defineEmits(["action"]);
 const { buttonAction } = useUIEvents();
 
 function togglePause() {
+    handleAction(pauseLabel.value);
     pauseLabel.value = pauseLabel.value === "||" ? "▶" : "||";
     emit("action", pauseLabel.value);
 }
