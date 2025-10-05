@@ -22,8 +22,6 @@ export function useSampleManager(sceneManager, fidManager) {
     }
 
     function sampleChange() {
-        console.log(1);
-
         if (appState.paused) {
             appState.paused = false
             // 在 Vue 中不直接操作 DOM，而是发事件更新 Pause 按钮

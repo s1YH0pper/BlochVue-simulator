@@ -33,7 +33,6 @@ function handleSceneReady(ctx) {
 
     /* --测试-- */
     console.log('Scene initialized', ctx)
-    console.log(sceneContext.value)
 }
 
 function handlePanelReady(ctx) {
@@ -41,7 +40,6 @@ function handlePanelReady(ctx) {
 
     /* --测试-- */
     console.log('Panel initialized', ctx)
-    console.log(panelContext.value)
 }
 
 function handleFIDReady(ctx) {

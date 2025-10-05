@@ -196,9 +196,6 @@ onMounted(() => {
     canvas.height = grWidth;
     axisCanvas.height = grWidth;
     grHeight = canvas.height;
-    console.log(mxyRef.value);
-
-    mxyRef.value.style.display = CONFIG.viewMxy ? "block" : "none";
 
     initAxis()
     emit("FID-ready", {
