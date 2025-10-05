@@ -7,7 +7,7 @@
 
         <!-- ExcHard -->
         <ConfigSplitButton label="ExcHard"
-            :options="['90°ₓ 硬脉冲', '90°ʸ 硬脉冲', '80°ʸ 硬脉冲', '30°ₓ 硬脉冲', '30°ʸ 硬脉冲', '90°ₓ sinch']"
+            :options="['90°ₓ 硬脉冲', '90°ʸ 硬脉冲', '80°ₓ 硬脉冲', '30°ₓ 硬脉冲', '30°ʸ 硬脉冲', '90°ₓ sinch']"
             @action="handleAction" />
 
         <!-- Soft -->
