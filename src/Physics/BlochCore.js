@@ -96,6 +96,7 @@ function gradPulse(phaseDiff, directionAngle) {
 }
 
 function gradRefocus() {
+    const { state } = BlochContext;
     let isocArr = state.IsocArr;
     let meanPhaseDiff = 0;
     let MxyLeft, MxyRight;
