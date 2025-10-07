@@ -188,6 +188,16 @@ const resize = () => {
     }
 }
 
+// 防抖包装的窗口尺寸变化处理
+let resizeTimer = null
+const handleWindowResize = () => {
+    if (resizeTimer) return
+    resizeTimer = setTimeout(() => {
+        resizeTimer = null
+        resize()
+    }, 200)
+}
+
 // 初始化场景
 const initScene = () => {
     // 初始化属性
@@ -245,6 +255,7 @@ const initScene = () => {
 // 组件挂载
 onMounted(() => {
     initScene()
+    window.addEventListener('resize', handleWindowResize)
 })
 
 // 组件卸载
@@ -256,6 +267,7 @@ onUnmounted(() => {
     if (controls) {
         controls.dispose()
     }
+    window.removeEventListener('resize', handleWindowResize)
 })
 </script>
 
