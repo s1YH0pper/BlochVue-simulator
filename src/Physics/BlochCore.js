@@ -249,7 +249,6 @@ function BlochStep(dt) {
             state.tLeftRF -= dt;
         }
     } else { // 无脉冲
-        console.log(state);
         // [B1vec, envelope] = state.RFfunc(B1, B1freq); //not IE compatible
         let retval = state.RFfunc(B1, B1freq);
         B1vec = retval[0];

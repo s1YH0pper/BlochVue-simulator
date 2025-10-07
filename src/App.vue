@@ -30,16 +30,10 @@ const appState = useAppStateStore()
 
 function handleSceneReady(ctx) {
     sceneContext.value = ctx
-
-    /* --测试-- */
-    console.log('Scene initialized', ctx)
 }
 
 function handlePanelReady(ctx) {
     panelContext.value = ctx
-
-    /* --测试-- */
-    console.log('Panel initialized', ctx)
 }
 
 function handleFIDReady(ctx) {
