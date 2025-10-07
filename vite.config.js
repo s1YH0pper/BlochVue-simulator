@@ -10,6 +10,9 @@ export default defineConfig({
         vue(),
         vueDevTools(),
     ],
+    base: process.env.NODE_ENV === 'production'
+        ? '/BlochVue-simulator/'  // GitHub Pages
+        : '/',                    // dev server
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
