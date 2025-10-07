@@ -194,7 +194,7 @@ const addFieldControls = (cFolder, createFromFolder) => {
                         return
                     }
                     const B1freq = state.B1freq
-                    appState.framePhase0 += -(B1freq - state.lastB1freq) * state.time.tSinceRF
+                    appState.framePhase0 += -(B1freq - state.lastB1freq) * state.tSinceRF
                     state.lastB1freq = state.B1freq
                 })
         },
