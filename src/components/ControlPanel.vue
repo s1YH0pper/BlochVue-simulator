@@ -236,7 +236,6 @@ const addFrameControls = (cFolder, createFromFolder) => {
                     state.FrameStat = true
                     state.FrameB0 = false
                     state.FrameB1 = false
-                    // 这里需要访问 sceneManager，可以通过 props 传入
                     props.sceneContext.floor.material = props.sceneContext.floorMaterial;
                     if (props.sceneContext.floorMaterial.visible)
                         props.sceneContext.initShadowMaterials(props.sceneContext.floorMaterial);
