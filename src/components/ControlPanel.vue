@@ -7,7 +7,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as dat from 'dat.gui'
-import { CONFIG, LABEL } from '@/config'
+import { CONFIG } from '@/config'
 import { useStateStore, useAppStateStore } from '@/stores/state'
 
 const emit = defineEmits(["panel-ready"])
@@ -82,7 +82,6 @@ const addBlochMenu = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -127,7 +126,6 @@ const addRelaxationControls = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -172,7 +170,6 @@ const addImageViewControls = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -203,7 +200,6 @@ const addFieldControls = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -218,7 +214,6 @@ const addGradientsControls = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -279,7 +274,6 @@ const addFrameControls = (cFolder, createFromFolder) => {
         },
         cFolder,
         createFromFolder,
-        LABEL.eventButtons
     )
 }
 
@@ -289,8 +283,7 @@ const guiAddFolder = (
     StrOpen,
     AdderFct,
     cFolder,
-    createFromFolder,
-    eventButtons
+    createFromFolder
 ) => {
     if (!gui || createFromFolder > 0) return null
 
@@ -306,12 +299,8 @@ const guiAddFolder = (
 
     if (guiFolderFlags[cFolder]) {
         guiFolder.close()
-        if (cFolder == nFolder)
-            eventButtons.css('z-index', 20)
     } else {
         guiFolder.open()
-        if (cFolder == nFolder - 1)
-            eventButtons.css('z-index', 0)
     }
 
     return guiFolder

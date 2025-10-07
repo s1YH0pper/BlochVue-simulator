@@ -50,11 +50,3 @@ export const VECTORS = {
     unitYvec: new THREE.Vector3(0., 1., 0.),
     unitZvec: new THREE.Vector3(0., 0., 1.)
 }
-
-// 标签配置 - 移除jQuery依赖，使用DOM API
-export const LABEL = {
-    eventButtons: document.querySelector('.EventButtons'),
-    MxLabelIdent: document.getElementById('MxLabel'),
-    MxyLabelIdent: document.getElementById('MxyLabel'),
-    MzLabelIdent: document.getElementById('MzLabel')
-} 

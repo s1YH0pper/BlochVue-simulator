@@ -1,6 +1,5 @@
 import { reactive } from "vue"
 import { basicState, scenes } from "@/Physics/BlochScenes"
-import { LABEL } from "@/config"
 import { useStateStore, useAppStateStore } from "@/stores/state"
 import { useUIEvents } from "@/composables/useUIEvents";
 
@@ -8,9 +7,6 @@ export function useSampleManager(sceneManager, fidManager) {
     const state = useStateStore()
     const appState = useAppStateStore()
     const buttonAction = useUIEvents()
-    const MxLabelIdent = LABEL.MxLabelIdent
-    const MxyLabelIdent = LABEL.MxyLabelIdent
-    const MzLabelIdent = LABEL.MzLabelIdent
 
     // 用 reactive 管理 UI 状态（比如按钮颜色）
     const uiState = reactive({
