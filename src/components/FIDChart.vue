@@ -8,7 +8,7 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, toRaw } from "vue";
 import { CONFIG, COLORS, VECTORS } from "@/config";
 
 const emit = defineEmits("FID-ready");
@@ -119,7 +119,7 @@ const updateFid = (sample, times, values, color, view, t) => {
 }
 
 const updateFidWrap = (Mx, Mz, Mxy, color, state) => {
-    switch (color) {
+    switch (toRaw(color)) {
         case COLORS.white:
             updateFid(Mx, curves.Mx.times, curves.Mx.values, "red", state.viewMx, state.t);
             updateFid(Mz, curves.Mz.times, curves.Mz.values, "gray", state.viewMz, state.t);
