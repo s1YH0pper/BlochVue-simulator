@@ -242,6 +242,7 @@ const initScene = () => {
         controls,
         floor,
         floorMaterial,
+        floorMaterialFixed,
         shadowMaterials,
         B1cyl,
         B1shadow,
