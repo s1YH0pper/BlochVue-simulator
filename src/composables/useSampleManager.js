@@ -40,7 +40,7 @@ export function useSampleManager(sceneManager, fidManager) {
                 state.Sample = '1 isochromate';
                 appState.frameFixed = false;
                 break;
-            case '平衡态':
+            case 'Equilibrium':
                 sampleObj = Object.assign(sampleObj, scenes.Equilibrium());
                 state.Sample = '1 isochromate';
                 appState.frameFixed = false;
@@ -56,17 +56,17 @@ export function useSampleManager(sceneManager, fidManager) {
                 state.curveScale = 2;
                 appState.frameFixed = false;
                 break;
-            case '弱梯度':
+            case 'Weak gradient':
                 sampleObj = Object.assign(sampleObj, scenes.WeakGradient());
                 appState.frameFixed = true;
                 state.Sample = 'Line';
                 break;
-            case '强梯度':
+            case 'Strong gradient':
                 sampleObj = Object.assign(sampleObj, scenes.StrongGradient(true));
                 appState.frameFixed = true;
                 state.Sample = 'Line, dense';
                 break;
-            case '结构':
+            case 'Structure':
                 sampleObj = Object.assign(sampleObj, scenes.StrongGradient(false));
                 appState.frameFixed = true;
                 state.Sample = 'Line, structured';
@@ -105,7 +105,7 @@ export function useSampleManager(sceneManager, fidManager) {
                 sampleObj = Object.assign(sampleObj, scenes.LineDense(false));
                 appState.frameFixed = true;
                 break;
-            case '平面':
+            case 'Plane':
                 sampleObj = Object.assign(sampleObj, scenes.Plane());
                 appState.frameFixed = true;
                 break;

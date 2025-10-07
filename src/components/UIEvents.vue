@@ -2,33 +2,31 @@
     <div class="event-menu">
         <!-- Presets -->
         <ConfigSplitButton label="Presets"
-            :options="['Precession', '平衡态', 'Inhomogeneity', 'Mixed matter', '弱梯度', '强梯度', '结构', 'Ensemble', '平面', 'Save']"
-            @action="handleAction" />
+            :options="['进动', '平衡态', '不均匀场', '混合物质', '弱梯度', '强梯度', '结构', '混沌态', '平面', 'Save']" @action="handleAction" />
 
         <!-- ExcHard -->
         <ConfigSplitButton label="ExcHard"
-            :options="['90°ₓ 硬脉冲', '90°ʸ 硬脉冲', '80°ₓ 硬脉冲', '30°ₓ 硬脉冲', '30°ʸ 硬脉冲', '90°ₓ sinch']"
+            :options="['90°ₓ 强脉冲', '90°ʸ 强脉冲', '80°ₓ 强脉冲', '30°ₓ 强脉冲', '30°ʸ 强脉冲', '90°ₓ 强sinc']"
             @action="handleAction" />
 
         <!-- Soft -->
         <ConfigSplitButton label="Soft"
-            :options="['90°ₓ 软脉冲', '90°ʸ 软脉冲', '30°ₓ 软脉冲', '30°ʸ 软脉冲', '90°ₓ sincs', '180°ʸ sincs']"
+            :options="['90°ₓ 弱脉冲', '90°ʸ 弱脉冲', '30°ₓ 弱脉冲', '30°ʸ 弱脉冲', '90°ₓ 弱sinc', '180°ʸ 弱sinc']"
             @action="handleAction" />
 
         <!-- Refocus -->
         <ConfigSplitButton label="Refocus" :options="['180°ʸ', '180°ₓ', '160°ʸ', '160°ₓ']" @action="handleAction" />
 
         <!-- Spoil -->
-        <ConfigSplitButton label="Spoil" :options="['扰相', 'Gx refocus', 'Gx pulse', 'Gy pulse']"
-            @action="handleAction" />
+        <ConfigSplitButton label="Spoil" :options="['扰相', 'Gx 再聚焦', 'Gx 脉冲', 'Gy 脉冲']" @action="handleAction" />
 
         <!-- RepExc -->
         <ConfigSplitButton label="RepExc" :options="[
-            'Non-rep. exc.',
-            '[90°ₓ] TR=5s,spoiled',
-            '[30°ʸ] TR=3s,spoiled',
-            '[90°ʸ] TR=5s,spoiled',
-            '[90°ʸ] TR=8s,spoiled',
+            '无重复激发',
+            '[90°ₓ] TR=5s,扰相',
+            '[30°ʸ] TR=3s,扰相',
+            '[90°ʸ] TR=5s,扰相',
+            '[90°ʸ] TR=8s,扰相',
             '[90°ₓ] TR=5s',
             '[±90°ₓ] TR=5s',
             '90°ₓ-[180°ʸ]ES=5s'

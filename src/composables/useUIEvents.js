@@ -13,70 +13,70 @@ export function useUIEvents() {
         let TR;
         switch (label) {
             // switch scene
-            case "Precession": state.Sample = "Precession";
+            case "进动": state.Sample = "Precession";
                 appState.trigSampleChange = true; break;
-            case "平衡态": state.Sample = "平衡态";
+            case "平衡态": state.Sample = "Equilibrium";
                 appState.trigSampleChange = true; break;
-            case "Inhomogeneity": state.Sample = "Inhomogeneity";
+            case "不均匀场": state.Sample = "Inhomogeneity";
                 appState.trigSampleChange = true; break;
-            case "Mixed matter": state.Sample = "Mixed matter";
+            case "混合物质": state.Sample = "Mixed matter";
                 appState.trigSampleChange = true; break;
-            case "弱梯度": state.Sample = "弱梯度";
+            case "弱梯度": state.Sample = "Weak gradient";
                 appState.trigSampleChange = true; break;
-            case "强梯度": state.Sample = "强梯度";
+            case "强梯度": state.Sample = "Strong gradient";
                 appState.trigSampleChange = true; break;
-            case "结构": state.Sample = "结构";
+            case "结构": state.Sample = "Structure";
                 appState.trigSampleChange = true; break;
-            case "Ensemble": state.Sample = "Ensemble";
+            case "混沌态": state.Sample = "Ensemble";
                 appState.trigSampleChange = true; break;
-            case "平面": state.Sample = "平面";
+            case "平面": state.Sample = "Plane";
                 appState.trigSampleChange = true; break;
 
             // hard pulse
-            case "90°ₓ 硬脉冲": RFpulse('rect', Math.PI / 2, Math.PI, 4); break;
-            case "90°ʸ 硬脉冲": RFpulse('rect', Math.PI / 2, -Math.PI / 2, 4); break;
-            case "80°ₓ 硬脉冲": RFpulse('rect', Math.PI / 2 / 9 * 8, Math.PI, 4); break;
-            case "30°ₓ 硬脉冲": RFpulse('rect', Math.PI / 6, Math.PI, 4); break;
-            case "30°ʸ 硬脉冲": RFpulse('rect', Math.PI / 6, -Math.PI / 2, 4); break;
-            case "90°ₓ sinch": RFpulse('sinc', Math.PI / 2, Math.PI, 4); break;
+            case "90°ₓ 强脉冲": RFpulse('rect', Math.PI / 2, Math.PI, 4); break;
+            case "90°ʸ 强脉冲": RFpulse('rect', Math.PI / 2, -Math.PI / 2, 4); break;
+            case "80°ₓ 强脉冲": RFpulse('rect', Math.PI / 2 / 9 * 8, Math.PI, 4); break;
+            case "30°ₓ 强脉冲": RFpulse('rect', Math.PI / 6, Math.PI, 4); break;
+            case "30°ʸ 强脉冲": RFpulse('rect', Math.PI / 6, -Math.PI / 2, 4); break;
+            case "90°ₓ 强sinc": RFpulse('sinc', Math.PI / 2, Math.PI, 4); break;
 
             // soft pulse
-            case "90°ₓ 软脉冲": RFpulse('rect', Math.PI / 2, Math.PI, 0.3); break;
-            case "90°ʸ 软脉冲": RFpulse('rect', Math.PI / 2, -Math.PI / 2, 0.3); break;
-            case "30°ₓ 软脉冲": RFpulse('rect', Math.PI / 6, Math.PI, 0.3); break;
-            case "30°ʸ 软脉冲": RFpulse('rect', Math.PI / 6, -Math.PI / 2, 0.3); break;
-            case "90°ₓ sincs": RFpulse('sinc', Math.PI / 2, Math.PI, 0.8); break;
+            case "90°ₓ 弱脉冲": RFpulse('rect', Math.PI / 2, Math.PI, 0.3); break;
+            case "90°ʸ 弱脉冲": RFpulse('rect', Math.PI / 2, -Math.PI / 2, 0.3); break;
+            case "30°ₓ 弱脉冲": RFpulse('rect', Math.PI / 6, Math.PI, 0.3); break;
+            case "30°ʸ 弱脉冲": RFpulse('rect', Math.PI / 6, -Math.PI / 2, 0.3); break;
+            case "90°ₓ 弱sinc": RFpulse('sinc', Math.PI / 2, Math.PI, 0.8); break;
+            case "180°ʸ 弱sinc": RFpulse('sinc', Math.PI, -Math.PI / 2, 1.6); break;
 
             // refocus pulse
             case "180°ʸ": RFpulse('rect', Math.PI, -Math.PI / 2, 8); break;
             case "180°ₓ": RFpulse('rect', Math.PI, Math.PI, 8); break;
             case "160°ʸ": RFpulse('rect', Math.PI / 9 * 8, -Math.PI / 2, 8); break;
             case "160°ₓ": RFpulse('rect', Math.PI / 9 * 8, Math.PI, 8); break;
-            case "180°ʸ sincs": RFpulse('sinc', Math.PI, -Math.PI / 2, 1.6); break;
 
             // spoil
             case "扰相": spoil(); break;
-            case "Gx refocus": if (appState.frameFixed) gradRefocus(); break;
-            case "Gx pulse": if (appState.frameFixed) gradPulse(2); break; // 任何区域
-            case "Gy pulse": if (appState.frameFixed) gradPulse(2, Math.PI / 2); break; // 任何区域
+            case "Gx 再聚焦": if (appState.frameFixed) gradRefocus(); break;
+            case "Gx 脉冲": if (appState.frameFixed) gradPulse(2); break; // 任何区域
+            case "Gy 脉冲": if (appState.frameFixed) gradPulse(2, Math.PI / 2); break; // 任何区域
 
             // repeat excute action
-            case "Non-rep. exc.":
+            case "无重复激发":
                 appState.clearRepTimers();
                 break;
-            case "[90°ₓ] TR=5s,spoiled":
+            case "[90°ₓ] TR=5s,扰相":
                 TR = 5000; //ms
                 exciteSpoilRepeat(TR, Math.PI / 2, [Math.PI], true);
                 break;
-            case "[30°ʸ] TR=3s,spoiled":
+            case "[30°ʸ] TR=3s,扰相":
                 TR = 3000; //ms
                 exciteSpoilRepeat(TR, Math.PI / 6, [-Math.PI / 2], true);
                 break;
-            case "[90°ʸ] TR=5s,spoiled":
+            case "[90°ʸ] TR=5s,扰相":
                 TR = 5000; //ms
                 exciteSpoilRepeat(TR, Math.PI / 2, [-Math.PI / 2], true);
                 break;
-            case "[90°ʸ] TR=8s,spoiled":
+            case "[90°ʸ] TR=8s,扰相":
                 TR = 8000; //ms
                 exciteSpoilRepeat(TR, Math.PI / 2, [-Math.PI / 2], true);
                 break;
