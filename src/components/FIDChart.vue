@@ -146,7 +146,7 @@ const updateFidWrap = (Mx, Mz, Mxy, color, state) => {
             );
             break;
         default:
-            alert("color should be specified");
+            console.warn("color should be specified");
     }
 }
 
