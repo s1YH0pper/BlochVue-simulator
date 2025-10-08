@@ -1,4 +1,4 @@
-import { reactive } from "vue"
+import { reactive, toRaw } from "vue"
 import { basicState, scenes } from "@/Physics/BlochScenes"
 import { useStateStore, useAppStateStore } from "@/stores/state"
 import { useUIEvents } from "@/composables/useUIEvents";
@@ -14,7 +14,20 @@ export function useSampleManager(sceneManager, fidManager) {
     })
 
     function removeIsocArr() {
-        state.IsocArr.forEach((item) => item.remove())
+        // 获取原始数组，避免响应式开销
+        const rawIsocs = toRaw(state.IsocArr)
+        const length = rawIsocs.length
+
+        // 批量移除，减少场景图更新次数
+        for (let i = 0; i < length; i++) {
+            const item = rawIsocs[i]
+            if (item && item.remove) {
+                item.remove()
+            }
+        }
+
+        // 一次性清空数组，避免逐个删除的响应式开销
+        state.IsocArr.length = 0
     }
 
     function sampleChange() {

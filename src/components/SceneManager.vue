@@ -169,7 +169,14 @@ const addToScene = (obj) => {
 
 // 从场景移除
 const removeFromScene = (obj) => {
-    obj.parent.remove(obj)
+    if (!obj) return
+
+    // 优先从父节点移除，避免场景图遍历
+    if (obj.parent) {
+        obj.parent.remove(obj)
+    } else if (scene) {
+        scene.remove(obj)
+    }
 }
 
 // 渲染场景
