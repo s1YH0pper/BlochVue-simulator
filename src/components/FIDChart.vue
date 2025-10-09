@@ -81,9 +81,14 @@ const updateFid = (sample, times, values, color, view, t) => {
     times.push(t);
 
     const FIDdurSecs = FIDduration / 1000;
-    while (times[0] < t - FIDdurSecs) {
-        times.shift();
-        values.shift();
+    // 计算起始下标，避免频繁 shift 造成 O(n^2)
+    let start = 0;
+    const cutoff = t - FIDdurSecs;
+    const lenBefore = times.length;
+    while (start < lenBefore && times[start] < cutoff) start++;
+    if (start > 0) {
+        times.splice(0, start);
+        values.splice(0, start);
     }
     if (!view) return;
 
