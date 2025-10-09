@@ -57,6 +57,9 @@ export const useAppStateStore = defineStore("appState", {
         spoilR2: 0,
         restartRepIfSampleChange: false,
         restartRepIfSampleChangeTimer: null,
+        spoilTimer1: null,
+        spoilTimer2: null,
+        spoilTimer3: null,
         exciteTimers: [],
     }),
     actions: {
@@ -91,10 +94,22 @@ export const useAppStateStore = defineStore("appState", {
         },
 
         clearRepTimers() {
-            window.clearTimeout(this.spoilTimer1);
-            window.clearInterval(this.spoilTimer2);
-            window.clearInterval(this.spoilTimer3);
-            window.clearInterval(this.restartRepIfSampleChangeTimer);
+            if (this.spoilTimer1) {
+                window.clearTimeout(this.spoilTimer1);
+                this.spoilTimer1 = null;
+            }
+            if (this.spoilTimer2) {
+                window.clearTimeout(this.spoilTimer2);
+                this.spoilTimer2 = null;
+            }
+            if (this.spoilTimer3) {
+                window.clearInterval(this.spoilTimer3);
+                this.spoilTimer3 = null;
+            }
+            if (this.restartRepIfSampleChangeTimer) {
+                window.clearTimeout(this.restartRepIfSampleChangeTimer);
+                this.restartRepIfSampleChangeTimer = null;
+            }
 
             this.exciteTimers.forEach((item) => {
                 window.clearInterval(item);
