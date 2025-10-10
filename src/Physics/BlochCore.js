@@ -128,32 +128,50 @@ function relaxThermal() {
     const { state } = BlochContext;
     let nIsoc = state.IsocArr.length;
     let rep, Mx, My, Mz, Mxy, arg, randomIsocIndi, randomIsoc, R1;
+
+    // 性能优化：预计算常用值
+    const twoPi = 2 * Math.PI;
+    const B0 = state.B0;
+    const B0max = CONFIG.B0max;
+
     if (state.T1 != Infinity) {
-        R1 = 1 / (state.T1 + 0.1); // 这里不需要准确的精度
-        for (rep = 1; rep < Math.floor(nIsoc * R1 / 10); rep++) { //TODO: frame rate needs to enter.
+        R1 = 1 / (state.T1 + CONFIG.thermalRelaxOffset); // 这里不需要准确的精度
+        const maxReps = Math.floor(nIsoc * R1 / CONFIG.thermalRelaxFactor);
+
+        // 批量生成随机数，减少 Math.random() 调用次数
+        for (rep = 1; rep < maxReps; rep++) {
             // 根据T1和nIsoc重复
-            Mz = Utils.thermalDrawFromLinearDist(state.B0, CONFIG.B0max); // cosTheta是线性分布的
+            Mz = Utils.thermalDrawFromLinearDist(B0, B0max); // cosTheta是线性分布的
             Mxy = Math.sqrt(1 - Mz * Mz);
             randomIsocIndi = Math.floor(nIsoc * Math.random());
             randomIsoc = state.IsocArr[randomIsocIndi];
-            arg = Math.random() * 2 * Math.PI;
-            randomIsoc.M.fromArray([Mxy * Math.cos(arg), Mxy * Math.sin(arg), Mz]);
+            arg = Math.random() * twoPi;
+
+            // 优化：直接设置向量分量，避免 fromArray 调用
+            const cosArg = Math.cos(arg);
+            const sinArg = Math.sin(arg);
+            randomIsoc.M.set(Mxy * cosArg, Mxy * sinArg, Mz);
         }
     }
     else
         R1 = 0;
     // 额外的T2弛豫，如果需要
-    let R2 = 1 / (state.T2 + 0.1); // 这里不需要准确的精度
+    let R2 = 1 / (state.T2 + CONFIG.thermalRelaxOffset); // 这里不需要准确的精度
     if (state.T2 != Infinity) {
-        for (rep = 1; rep < Math.floor(nIsoc * (R2 - R1) / 10); rep++) { //TODO: frame rate needs to enter.
+        const maxReps = Math.floor(nIsoc * (R2 - R1) / CONFIG.thermalRelaxFactor);
+        for (rep = 1; rep < maxReps; rep++) { //TODO: frame rate needs to enter.
             randomIsocIndi = Math.floor(nIsoc * Math.random());
             randomIsoc = state.IsocArr[randomIsocIndi];
             Mx = randomIsoc.M.x;
             My = randomIsoc.M.y;
             Mxy = Math.sqrt(Mx * Mx + My * My);
-            arg = Math.random() * 2 * Math.PI;
-            randomIsoc.M.x = Mxy * Math.cos(arg);
-            randomIsoc.M.y = Mxy * Math.sin(arg);
+            arg = Math.random() * twoPi;
+
+            // 优化：预计算三角函数
+            const cosArg = Math.cos(arg);
+            const sinArg = Math.sin(arg);
+            randomIsoc.M.x = Mxy * cosArg;
+            randomIsoc.M.y = Mxy * sinArg;
         }
     }
 }
