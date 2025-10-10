@@ -79,67 +79,107 @@ function updateB1AndIsochromats(B1vec, B1mag, isochromatData) {
     const downViewRatio = 1 - Math.min(viewingAngle / CONFIG.downViewThresh, 1);
     const renderShadowMaterial = sceneManager.shadowMaterials[Math.round(downViewRatio * (CONFIG.nShadowColors - 1))];
 
+    // 性能优化：预计算 B1vec 相关值
+    const B1vecX = B1vec.x;
+    const B1vecY = B1vec.y;
+    const B1vecZ = B1vec.z;
+    const B1magInv = B1mag > CONFIG.minVectorLength ? 1 / B1mag : 0;
+    const B1scaleAllScale = CONFIG.B1scale * allScale;
+
     if (B1mag !== 0 && state.viewB1) {
-        sceneManager.B1cyl.quaternion.setFromUnitVectors(VECTORS.unitYvec, B1vec.clone().divideScalar(B1mag));
-        sceneManager.B1cyl.scale.y = B1mag * CONFIG.B1scale * allScale;
+        // 优化：避免不必要的 Vector3 克隆
+        sceneManager.B1cyl.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+            new THREE.Vector3(B1vecX * B1magInv, B1vecY * B1magInv, B1vecZ * B1magInv));
+        sceneManager.B1cyl.scale.y = B1mag * B1scaleAllScale;
         sceneManager.B1cyl.visible = true;
 
         if (CONFIG.myShadow) {
-            const B1vecTrans = B1vec.clone().projectOnPlane(VECTORS.unitZvec);
-            const B1vecTransLength = B1vecTrans.length();
-
-            sceneManager.B1shadow.material = renderShadowMaterial;
-            sceneManager.B1shadow.quaternion.setFromUnitVectors(VECTORS.unitYvec, B1vecTrans.clone().divideScalar(B1vecTransLength));
-            sceneManager.B1shadow.scale.y = B1vecTransLength * CONFIG.B1scale * allScale;
-            sceneManager.B1shadow.visible = true;
+            // 优化：直接计算投影，避免 clone 和 projectOnPlane
+            const B1vecTransLength = Math.sqrt(B1vecX * B1vecX + B1vecY * B1vecY);
+            if (B1vecTransLength > CONFIG.minVectorLength) {
+                const B1vecTransInv = 1 / B1vecTransLength;
+                sceneManager.B1shadow.material = renderShadowMaterial;
+                sceneManager.B1shadow.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                    new THREE.Vector3(B1vecX * B1vecTransInv, B1vecY * B1vecTransInv, 0));
+                sceneManager.B1shadow.scale.y = B1vecTransLength * B1scaleAllScale;
+                sceneManager.B1shadow.visible = true;
+            }
         }
     } else {
         sceneManager.B1cyl.visible = false;
         sceneManager.B1shadow.visible = false;
     }
 
-    isochromatData.forEach(({ Mvec, dMRFvec, isoc }) => {
+    // 性能优化：使用传统 for 循环替代 forEach，减少函数调用开销
+    const dataLength = isochromatData.length;
+    for (let i = 0; i < dataLength; i++) {
+        const { Mvec, dMRFvec, isoc } = isochromatData[i];
         const MvecLength = Mvec.length();
         isoc.B1eff.visible = false;
         isoc.tshadow.visible = false;
 
-        if (state.FrameB1 && state.viewTorqB1eff && (isoc.detuning !== 0 || appState.frameFixed || isochromatData.length === 1)) {
-            const B1eff = B1vec.clone().addScaledVector(VECTORS.unitZvec, isoc.detuning);
-            const B1effMag = B1eff.length();
-            if (B1effMag !== 0) {
+        if (state.FrameB1 && state.viewTorqB1eff && (isoc.detuning !== 0 || appState.frameFixed || dataLength === 1)) {
+            // 优化：直接计算 B1eff，避免 Vector3 克隆
+            const B1effX = B1vecX;
+            const B1effY = B1vecY;
+            const B1effZ = B1vecZ + isoc.detuning;
+            const B1effMag = Math.sqrt(B1effX * B1effX + B1effY * B1effY + B1effZ * B1effZ);
+
+            if (B1effMag > CONFIG.minVectorLength) {
+                const B1effMagInv = 1 / B1effMag;
                 isoc.B1eff.visible = true;
-                isoc.B1eff.quaternion.setFromUnitVectors(VECTORS.unitYvec, B1eff.clone().divideScalar(B1effMag));
-                isoc.B1eff.scale.y = B1effMag * CONFIG.B1scale * allScale;
+                isoc.B1eff.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                    new THREE.Vector3(B1effX * B1effMagInv, B1effY * B1effMagInv, B1effZ * B1effMagInv));
+                isoc.B1eff.scale.y = B1effMag * B1scaleAllScale;
                 isoc.B1eff.position.set(isoc.pos.x, isoc.pos.y, isoc.pos.z);
 
                 if (CONFIG.myShadow) {
-                    const B1effTrans = B1eff.clone().projectOnPlane(VECTORS.unitZvec);
-                    const B1effTransLength = B1effTrans.length();
-                    isoc.tshadow.material = renderShadowMaterial;
-                    isoc.tshadow.quaternion.setFromUnitVectors(VECTORS.unitYvec, B1effTrans.clone().divideScalar(B1effTransLength));
-                    isoc.tshadow.scale.y = B1effTransLength * CONFIG.B1scale * allScale;
-                    isoc.tshadow.visible = true;
+                    // 优化：直接计算投影
+                    const B1effTransLength = Math.sqrt(B1effX * B1effX + B1effY * B1effY);
+                    if (B1effTransLength > CONFIG.minVectorLength) {
+                        const B1effTransInv = 1 / B1effTransLength;
+                        isoc.tshadow.material = renderShadowMaterial;
+                        isoc.tshadow.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                            new THREE.Vector3(B1effX * B1effTransInv, B1effY * B1effTransInv, 0));
+                        isoc.tshadow.scale.y = B1effTransLength * B1scaleAllScale;
+                        isoc.tshadow.visible = true;
+                    }
                 }
             }
         }
 
-        if (MvecLength > 0.005) {
-            isoc.cylMesh.quaternion.setFromUnitVectors(VECTORS.unitYvec, Mvec.clone().divideScalar(MvecLength));
+        if (MvecLength > CONFIG.minMvecLength) {
+            // 优化：避免 Vector3 克隆
+            const MvecInv = 1 / MvecLength;
+            isoc.cylMesh.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                new THREE.Vector3(Mvec.x * MvecInv, Mvec.y * MvecInv, Mvec.z * MvecInv));
             isoc.cylMesh.scale.y = MvecLength * allScale;
             isoc.cylMesh.position.set(isoc.pos.x, isoc.pos.y, isoc.pos.z);
-            const torqueStart = Mvec.clone().clampLength(0, Mvec.length() * allScale - CONFIG.radius / 2).add(isoc.pos);
-            isoc.torque.position.set(torqueStart.x, torqueStart.y, torqueStart.z);
+
+            // 优化：直接计算 torqueStart
+            const torqueLength = Math.max(0, MvecLength * allScale - CONFIG.radius / 2);
+            const torqueScale = torqueLength / MvecLength;
+            isoc.torque.position.set(
+                isoc.pos.x + Mvec.x * torqueScale,
+                isoc.pos.y + Mvec.y * torqueScale,
+                isoc.pos.z + Mvec.z * torqueScale
+            );
             isoc.cylMesh.visible = true;
             isoc.shadow.visible = true;
         } else {
             isoc.cylMesh.visible = false;
         }
 
-        const MvecTrans = Mvec.clone().projectOnPlane(VECTORS.unitZvec).multiplyScalar(allScale);
-        const MvecTransLength = MvecTrans.length();
-        if (CONFIG.myShadow && MvecTransLength > 0.005) {
+        // 优化：直接计算 MvecTrans
+        const MvecTransX = Mvec.x * allScale;
+        const MvecTransY = Mvec.y * allScale;
+        const MvecTransLength = Math.sqrt(MvecTransX * MvecTransX + MvecTransY * MvecTransY);
+
+        if (CONFIG.myShadow && MvecTransLength > CONFIG.minMvecLength) {
+            const MvecTransInv = 1 / MvecTransLength;
             isoc.shadow.material = renderShadowMaterial;
-            isoc.shadow.quaternion.setFromUnitVectors(VECTORS.unitYvec, MvecTrans.clone().divideScalar(MvecTransLength));
+            isoc.shadow.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                new THREE.Vector3(MvecTransX * MvecTransInv, MvecTransY * MvecTransInv, 0));
             isoc.shadow.position.set(isoc.pos.x, isoc.pos.y, 0);
             isoc.tshadow.position.set(isoc.pos.x, isoc.pos.y, 0);
             isoc.shadow.scale.y = MvecTransLength;
@@ -148,26 +188,33 @@ function updateB1AndIsochromats(B1vec, B1mag, isochromatData) {
         }
 
         const dMRFvecLength = dMRFvec.length();
-        if (dMRFvecLength < 0.01 || !state.viewTorqB1eff || state.FrameB1) {
+        if (dMRFvecLength < CONFIG.minTorqueLength || !state.viewTorqB1eff || state.FrameB1) {
             isoc.torque.visible = false;
         } else {
             isoc.torque.visible = true;
             isoc.tshadow.visible = true;
-            isoc.torque.quaternion.setFromUnitVectors(VECTORS.unitYvec, dMRFvec.clone().divideScalar(dMRFvecLength));
-            isoc.torque.scale.y = dMRFvecLength * CONFIG.torqueScale * allScale;
-            const dMRFvecTrans = dMRFvec.clone().projectOnPlane(VECTORS.unitZvec);
-            const dMRFvecTransLength = dMRFvecTrans.length();
 
-            if (CONFIG.myShadow && dMRFvecTransLength > 0.005) {
+            // 优化：避免 Vector3 克隆
+            const dMRFvecInv = 1 / dMRFvecLength;
+            isoc.torque.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                new THREE.Vector3(dMRFvec.x * dMRFvecInv, dMRFvec.y * dMRFvecInv, dMRFvec.z * dMRFvecInv));
+            isoc.torque.scale.y = dMRFvecLength * CONFIG.torqueScale * allScale;
+
+            // 优化：直接计算 dMRFvecTrans
+            const dMRFvecTransLength = Math.sqrt(dMRFvec.x * dMRFvec.x + dMRFvec.y * dMRFvec.y);
+
+            if (CONFIG.myShadow && dMRFvecTransLength > CONFIG.minMvecLength) {
+                const dMRFvecTransInv = 1 / dMRFvecTransLength;
                 isoc.tshadow.material = renderShadowMaterial;
-                isoc.tshadow.quaternion.setFromUnitVectors(VECTORS.unitYvec, dMRFvecTrans.clone().divideScalar(dMRFvecTransLength));
-                isoc.tshadow.position.set(isoc.pos.x + MvecTrans.x, isoc.pos.y + MvecTrans.y, 0);
+                isoc.tshadow.quaternion.setFromUnitVectors(VECTORS.unitYvec,
+                    new THREE.Vector3(dMRFvec.x * dMRFvecTransInv, dMRFvec.y * dMRFvecTransInv, 0));
+                isoc.tshadow.position.set(isoc.pos.x + MvecTransX, isoc.pos.y + MvecTransY, 0);
                 isoc.tshadow.scale.y = dMRFvecTransLength * CONFIG.torqueScale * allScale;
             } else {
                 isoc.tshadow.visible = false;
             }
         }
-    });
+    }
 }
 
 export { Isoc, bindRenderContext, updateB1AndIsochromats };
