@@ -376,18 +376,23 @@ function PhysicalParam(dt) {
     let Mtot = nullvec.clone();
     let showTotalCurve = true;
 
-    for (let i = 0; i < state.IsocArr.length; i++) {
+    // 性能优化：预分配数组大小，减少动态扩容
+    const isocLength = state.IsocArr.length;
+    isochromatData.length = isocLength;
+
+    for (let i = 0; i < isocLength; i++) {
         const isoc = state.IsocArr[i];
         const Mvec = isoc.M.clone();
         Mtot.add(Mvec);
         const dMRFvec = isoc.dMRF;
 
-        isochromatData.push({
+        // 直接设置数组元素，避免 push 操作
+        isochromatData[i] = {
             Mvec,
             dMRFvec,
             isoc,
             showCurve: isoc.showCurve,
-        });
+        };
 
         if (isoc.showCurve) showTotalCurve = false;
     }
