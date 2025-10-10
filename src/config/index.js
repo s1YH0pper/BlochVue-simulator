@@ -24,6 +24,13 @@ export const CONFIG = {
     spoilDuration: 1000,
     FIDduration: 4000, //ms
 
+    // 性能优化参数
+    minVectorLength: 1e-10, // 最小向量长度阈值，避免除零
+    minMvecLength: 0.005, // 最小磁化向量长度阈值
+    minTorqueLength: 0.01, // 最小扭矩长度阈值
+    thermalRelaxFactor: 10, // 热弛豫计算因子
+    thermalRelaxOffset: 0.1, // 热弛豫计算偏移量
+
     // 调试配置
     debug: false,
     reloadSceneResetsParms: false, // 场景主按钮全部重置
