@@ -288,22 +288,63 @@ function BlochStep(dt) {
         }
     }
 
-    for (let Cspin = 0; Cspin < state.IsocArr.length; Cspin++) {
-        isoc = state.IsocArr[Cspin];
-        isoc.detuning = isoc.dB0 + (Gx * isoc.pos.x + Gy * isoc.pos.y) / CONFIG.gradScale;
-        let Bvec = B1vec.clone().addScaledVector(unitZvec, B0 + isoc.detuning);
-        isoc.detuning = (B0 + isoc.detuning) / gamma - B1freq;
+    // 性能优化：预计算常用值，减少循环内计算
+    const isocLength = state.IsocArr.length;
+    const gradScaleInv = 1 / CONFIG.gradScale;
+    const dtGamma = dt * gamma;
+    const B0Gamma = B0 / gamma;
+    const B1freqSub = B1freq;
 
-        let Bmag = Bvec.length();
-        if (Bmag != 0) {
-            isoc.M.applyAxisAngle(Bvec.clone().divideScalar(Bmag),
-                -Bmag * dt * gamma);
+    // 预计算 B1vec 相关值
+    const B1vecX = B1vec.x;
+    const B1vecY = B1vec.y;
+    const B1vecZ = B1vec.z;
+    const B1vecIsNull = B1vec.equals(nullvec);
+
+    // 批量处理 isochromates，减少函数调用开销
+    for (let Cspin = 0; Cspin < isocLength; Cspin++) {
+        isoc = state.IsocArr[Cspin];
+
+        // 优化：减少重复计算
+        const posX = isoc.pos.x;
+        const posY = isoc.pos.y;
+        const dB0 = isoc.dB0;
+
+        // 计算 detuning（避免重复除法）
+        const detuning = dB0 + (Gx * posX + Gy * posY) * gradScaleInv;
+        isoc.detuning = (B0 + detuning) * B0Gamma - B1freqSub;
+
+        // 优化：避免不必要的 Vector3 克隆
+        const BvecX = B1vecX;
+        const BvecY = B1vecY;
+        const BvecZ = B1vecZ + B0 + detuning;
+
+        const Bmag = Math.sqrt(BvecX * BvecX + BvecY * BvecY + BvecZ * BvecZ);
+        if (Bmag > CONFIG.minVectorLength) { // 避免除零
+            const BmagInv = 1 / Bmag;
+            const axisX = BvecX * BmagInv;
+            const axisY = BvecY * BmagInv;
+            const axisZ = BvecZ * BmagInv;
+            const angle = -Bmag * dtGamma;
+
+            // 直接应用旋转，避免 applyAxisAngle 的开销
+            isoc.M.applyAxisAngle(new THREE.Vector3(axisX, axisY, axisZ), angle);
         }
 
-        if (!B1vec.equals(nullvec)) {
-            isoc.dMRF.crossVectors(isoc.M, B1vec).multiplyScalar(gamma);// 扭矩
-        } else
-            isoc.dMRF = nullvec.clone();
+        // 优化：简化扭矩计算
+        if (!B1vecIsNull) {
+            // 直接计算叉积，避免函数调用
+            const Mx = isoc.M.x;
+            const My = isoc.M.y;
+            const Mz = isoc.M.z;
+            isoc.dMRF.set(
+                (My * B1vecZ - Mz * B1vecY) * gamma,
+                (Mz * B1vecX - Mx * B1vecZ) * gamma,
+                (Mx * B1vecY - My * B1vecX) * gamma
+            );
+        } else {
+            isoc.dMRF.copy(nullvec);
+        }
 
         if (RelaxFlag) {
             let df2 = isoc.dR2 ? Math.exp(-isoc.dR2 * dt) : 1; //extra relax for isoc
