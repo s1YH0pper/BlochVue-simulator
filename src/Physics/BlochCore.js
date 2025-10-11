@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Utils } from "@/utils";
 import { VECTORS, CONFIG } from "@/config";
 import { useStateStore, useAppStateStore } from "@/stores/state"
+import { toRaw } from "vue";
 
 const { nullvec, unitZvec } = VECTORS;
 
@@ -69,13 +70,15 @@ function RFpulse(type, angle, phase, B1) {
 
 function spoil() {
     const { state, appState } = BlochContext;
+    const rawIsocs = toRaw(state.IsocArr);
+    const isocLength = rawIsocs.length;
     appState.spoilR2 = 4.7;
     window.setTimeout(
         function () {
             appState.spoilR2 = 0;
             if (state.Sample == "Thermal ensemble") return; // 对于ensemble场景不清除
-            for (let i = 0; i < state.IsocArr.length; i++) { // 清除所有剩余的横向分量
-                state.IsocArr[i].M.projectOnVector(unitZvec);
+            for (let i = 0; i < isocLength; i++) { // 清除所有剩余的横向分量
+                rawIsocs[i].M.projectOnVector(unitZvec);
             }
         }, CONFIG.spoilDuration); // ms
 }
@@ -126,7 +129,9 @@ function gradRefocus() {
 
 function relaxThermal() {
     const { state } = BlochContext;
-    let nIsoc = state.IsocArr.length;
+    // 获取原始数组，避免响应式开销
+    const rawIsocs = toRaw(state.IsocArr)
+    let nIsoc = rawIsocs.length;
     let rep, Mx, My, Mz, Mxy, arg, randomIsocIndi, randomIsoc, R1;
 
     // 性能优化：预计算常用值
@@ -144,7 +149,7 @@ function relaxThermal() {
             Mz = Utils.thermalDrawFromLinearDist(B0, B0max); // cosTheta是线性分布的
             Mxy = Math.sqrt(1 - Mz * Mz);
             randomIsocIndi = Math.floor(nIsoc * Math.random());
-            randomIsoc = state.IsocArr[randomIsocIndi];
+            randomIsoc = rawIsocs[randomIsocIndi];
             arg = Math.random() * twoPi;
 
             // 优化：直接设置向量分量，避免 fromArray 调用
@@ -161,7 +166,7 @@ function relaxThermal() {
         const maxReps = Math.floor(nIsoc * (R2 - R1) / CONFIG.thermalRelaxFactor);
         for (rep = 1; rep < maxReps; rep++) { //TODO: frame rate needs to enter.
             randomIsocIndi = Math.floor(nIsoc * Math.random());
-            randomIsoc = state.IsocArr[randomIsocIndi];
+            randomIsoc = rawIsocs[randomIsocIndi];
             Mx = randomIsoc.M.x;
             My = randomIsoc.M.y;
             Mxy = Math.sqrt(Mx * Mx + My * My);
@@ -289,7 +294,8 @@ function BlochStep(dt) {
     }
 
     // 性能优化：预计算常用值，减少循环内计算
-    const isocLength = state.IsocArr.length;
+    const rawIsocs = toRaw(state.IsocArr);
+    const isocLength = rawIsocs.length;
     const gradScaleInv = 1 / CONFIG.gradScale;
     const dtGamma = dt * gamma;
     const B0Gamma = B0 / gamma;
@@ -303,7 +309,7 @@ function BlochStep(dt) {
 
     // 批量处理 isochromates，减少函数调用开销
     for (let Cspin = 0; Cspin < isocLength; Cspin++) {
-        isoc = state.IsocArr[Cspin];
+        isoc = rawIsocs[Cspin];
 
         // 优化：减少重复计算
         const posX = isoc.pos.x;
@@ -355,8 +361,6 @@ function BlochStep(dt) {
                 isoc.M.y * f2 * df2,
                 isoc.M.z * f1 * df1 + (1. - f1 * df1) * M0);
         }
-
-        state.IsocArr[Cspin] = isoc;
     }
 
     // 调试:检查nullvec是否改变过
@@ -376,12 +380,13 @@ function PhysicalParam(dt) {
     let Mtot = nullvec.clone();
     let showTotalCurve = true;
 
-    // 性能优化：预分配数组大小，减少动态扩容
-    const isocLength = state.IsocArr.length;
+    // 性能优化：预分配数组大小，减少动态扩容. 获取原始数组，避免响应式开销
+    const rawIsocs = toRaw(state.IsocArr)
+    const isocLength = rawIsocs.length;
     isochromatData.length = isocLength;
 
     for (let i = 0; i < isocLength; i++) {
-        const isoc = state.IsocArr[i];
+        const isoc = rawIsocs[i];
         const Mvec = isoc.M.clone();
         Mtot.add(Mvec);
         const dMRFvec = isoc.dMRF;
