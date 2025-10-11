@@ -1,8 +1,8 @@
 <template>
     <div class="event-menu" id="EventMenu" ref="eventMenuRef">
         <!-- Presets -->
-        <ConfigSplitButton label="Presets"
-            :options="['进动', '平衡态', '不均匀场', '混合物质', '弱梯度', '强梯度', '结构', '混沌态', '平面', 'Save']" @action="handleAction" />
+        <ConfigSplitButton label="Presets" :options="['进动', '平衡态', '不均匀场', '混合物质', '弱梯度', '强梯度', '结构', '混沌态', '平面']"
+            @action="toggleScene" />
 
         <!-- ExcHard -->
         <ConfigSplitButton label="ExcHard"
@@ -36,6 +36,11 @@
         <el-button type="warning" @click="togglePause">
             {{ pauseLabel }}
         </el-button>
+
+        <!-- Save 普通按钮 -->
+        <el-button type="warning" @click="toggleSave">
+            {{ saveLabel }}
+        </el-button>
     </div>
 </template>
 
@@ -46,6 +51,7 @@ import { useUIEvents } from "@/composables/useUIEvents";
 
 // 暂停按钮状态
 const pauseLabel = ref("||");
+const saveLabel = ref("保存场景");
 const eventMenuRef = ref(null)
 
 const emit = defineEmits(["action"]);
@@ -55,6 +61,18 @@ function togglePause() {
     handleAction(pauseLabel.value);
     pauseLabel.value = pauseLabel.value === "||" ? "▶" : "||";
     emit("action", pauseLabel.value);
+}
+
+function toggleSave() {
+    handleAction(saveLabel.value);
+    saveLabel.value = "恢复场景";
+    emit("action", saveLabel.value);
+}
+
+function toggleScene(cmd) {
+    handleAction(cmd);
+    saveLabel.value = "保存场景";
+    pauseLabel.value = "||";
 }
 
 // 所有下拉菜单和主按钮的动作
@@ -111,5 +129,9 @@ onUnmounted(() => {
     z-index: 20;
     transform-origin: bottom left;
     padding-left: 8px;
+}
+
+.el-button+.el-button {
+    margin-left: 0px;
 }
 </style>

@@ -106,6 +106,14 @@ export function useUIEvents() {
                 appState.paused = true;
                 break;
             case "▶": break;
+
+            // scene save & load
+            case "保存场景":
+                appState.saveState();
+                break;
+            case "恢复场景":
+                appState.restoreState();
+                break;
             default:
                 console.warn("未处理的按钮命令:", label)
         }
