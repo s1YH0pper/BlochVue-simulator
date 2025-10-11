@@ -65,8 +65,8 @@ export const useAppStateStore = defineStore("appState", {
     actions: {
         saveState() {
             const state = useStateStore();
-            this.savedState = JSON.parse(JSON.stringify(state.$state));
-            delete this.savedState.IsocArr;
+            this.savedState = { ...state };
+            delete this.savedState.IsocArr
 
             this.savedState2 = state.IsocArr.map(item => ({
                 Mx: item.M.x,
