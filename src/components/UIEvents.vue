@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { ElMessageBox } from 'element-plus';
 import ConfigSplitButton from "@/components/ConfigSplitButton.vue"; // 可复用子组件
 import { useUIEvents } from "@/composables/useUIEvents";
@@ -132,42 +132,6 @@ function handleAction(cmd) {
     buttonAction(cmd);
     emit("action", cmd);
 }
-
-// 自适应缩放：根据容器内容总宽与窗口宽度缩放
-let resizeTimer = null
-function adjustToScreen() {
-    const el = eventMenuRef.value
-    if (!el) return
-
-    const scrWidth = window.innerWidth
-    const totalWidth = Math.ceil(el.scrollWidth + 5)
-
-    let zoomFactor
-    if ((scrWidth < 800) || (totalWidth > scrWidth)) {
-        zoomFactor = Math.max(0.5, scrWidth / totalWidth)
-    } else {
-        zoomFactor = 1
-    }
-
-    el.style.transform = `scale(${zoomFactor})`
-}
-
-function onResize() {
-    if (resizeTimer) return
-    resizeTimer = setTimeout(() => {
-        resizeTimer = null
-        adjustToScreen()
-    }, 200)
-}
-
-onMounted(() => {
-    adjustToScreen()
-    window.addEventListener('resize', onResize)
-})
-
-onUnmounted(() => {
-    window.removeEventListener('resize', onResize)
-})
 </script>
 
 <style scoped>
