@@ -46,6 +46,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { ElMessageBox } from 'element-plus';
 import ConfigSplitButton from "@/components/ConfigSplitButton.vue"; // 可复用子组件
 import { useUIEvents } from "@/composables/useUIEvents";
 
@@ -63,16 +64,67 @@ function togglePause() {
     emit("action", pauseLabel.value);
 }
 
-function toggleSave() {
-    handleAction(saveLabel.value);
-    saveLabel.value = "恢复场景";
-    emit("action", saveLabel.value);
+async function toggleSave() {
+    if (saveLabel.value === "保存场景") {
+        // 保存场景
+        try {
+            await ElMessageBox.confirm(
+                '确定要保存当前场景状态吗？',
+                '保存确认',
+                {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info',
+                    center: true
+                }
+            );
+            handleAction(saveLabel.value);
+            saveLabel.value = "恢复场景";
+            emit("action", saveLabel.value);
+        } catch {
+            console.log('用户取消了保存操作');
+        }
+    } else {
+        // 恢复场景
+        try {
+            await ElMessageBox.confirm(
+                '确定要恢复到之前保存的场景状态吗？当前进度将会丢失。',
+                '恢复确认',
+                {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }
+            );
+            handleAction(saveLabel.value);
+            emit("action", saveLabel.value);
+        } catch {
+            console.log('用户取消了恢复操作');
+        }
+    }
 }
 
-function toggleScene(cmd) {
-    handleAction(cmd);
-    saveLabel.value = "保存场景";
-    pauseLabel.value = "||";
+async function toggleScene(cmd) {
+    try {
+        await ElMessageBox.confirm(
+            `确定要切换到场景"${cmd}"吗？当前场景的进度将会丢失。`,
+            '场景切换确认',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+                center: true
+            }
+        );
+        // 用户确认后执行场景切换
+        handleAction(cmd);
+        saveLabel.value = "保存场景";
+        pauseLabel.value = "||";
+    } catch {
+        // 用户取消，不执行任何操作
+        console.log('用户取消了场景切换');
+    }
 }
 
 // 所有下拉菜单和主按钮的动作
