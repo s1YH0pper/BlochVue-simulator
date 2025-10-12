@@ -8,7 +8,7 @@ export function useUIEvents() {
 
     function buttonAction(label) {
         if (appState.paused) {
-            appState.paused = false
+            appState.togglePause();
         }
         let TR;
         switch (label) {
