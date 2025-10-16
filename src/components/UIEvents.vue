@@ -49,6 +49,9 @@ import { ref } from "vue";
 import { ElMessageBox } from 'element-plus';
 import ConfigSplitButton from "@/components/ConfigSplitButton.vue"; // 可复用子组件
 import { useUIEvents } from "@/composables/useUIEvents";
+import { useAppStateStore } from "@/stores/state";
+
+const appState = useAppStateStore()
 
 // 暂停按钮状态
 const pauseLabel = ref("||");
@@ -65,6 +68,7 @@ function togglePause() {
 }
 
 async function toggleSave() {
+    appState.paused = true;
     if (saveLabel.value === "保存场景") {
         // 保存场景
         try {
@@ -82,7 +86,7 @@ async function toggleSave() {
             saveLabel.value = "恢复场景";
             emit("action", saveLabel.value);
         } catch {
-            console.log('用户取消了保存操作');
+            appState.paused = false;
         }
     } else {
         // 恢复场景
@@ -100,12 +104,13 @@ async function toggleSave() {
             handleAction(saveLabel.value);
             emit("action", saveLabel.value);
         } catch {
-            console.log('用户取消了恢复操作');
+            appState.paused = false;
         }
     }
 }
 
 async function toggleScene(cmd) {
+    appState.paused = true;
     try {
         await ElMessageBox.confirm(
             `确定要切换到场景"${cmd}"吗？当前场景的进度将会丢失。`,
@@ -122,8 +127,7 @@ async function toggleScene(cmd) {
         saveLabel.value = "保存场景";
         pauseLabel.value = "||";
     } catch {
-        // 用户取消，不执行任何操作
-        console.log('用户取消了场景切换');
+        appState.paused = false;
     }
 }
 
