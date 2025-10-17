@@ -144,9 +144,8 @@ export function useSampleManager(sceneManager, fidManager) {
         fidManager.mzRef.style.display = state.viewMz ? "block" : "none";
         fidManager.mxyRef.style.display = state.viewMxy ? "block" : "none";
 
-        // FID曲线清理
-        fidManager.curves.blue.values.forEach((_, index) => (fidManager.curves.blue.values[index] = 0))
-        fidManager.curves.green.values.forEach((_, index) => (fidManager.curves.green.values[index] = 0))
+        // FID曲线清理 - 完全清空所有曲线数据
+        fidManager.clearAll();
     }
 
     return {
