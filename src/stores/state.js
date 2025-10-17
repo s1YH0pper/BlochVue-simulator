@@ -61,6 +61,7 @@ export const useAppStateStore = defineStore("appState", {
         spoilTimer2: null,
         spoilTimer3: null,
         exciteTimers: [],
+        triggerFIDClear: false,
     }),
     actions: {
         saveState() {
@@ -91,6 +92,9 @@ export const useAppStateStore = defineStore("appState", {
                 item.M.y = saved.My;
                 item.M.z = saved.Mz;
             });
+
+            // 触发FID清理事件
+            this.triggerFIDClear = true;
         },
 
         clearRepTimers() {

@@ -208,7 +208,8 @@ onMounted(() => {
         mxRef,
         mzRef,
         curves,
-        updateFidCurves
+        updateFidCurves,
+        clearAll
     })
 })
 </script>

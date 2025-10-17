@@ -50,7 +50,16 @@ watch([sceneContext, panelContext], ([scene, panel]) => {
 onMounted(() => {
     state.Sample = "Precession"
     appState.trigSampleChange = true
+
     const { sampleChange } = useSampleManager(sceneContext.value, fidContext.value)
+
+    // 监听场景恢复事件，清理FID数据
+    watch(() => appState.triggerFIDClear, (newVal) => {
+        if (newVal && fidContext.value && fidContext.value.clearAll) {
+            fidContext.value.clearAll();
+            appState.triggerFIDClear = false; // 重置标志
+        }
+    })
     const mainLoop = (dt) => {
         if (dt > 0.1) { return }
         appState.guiTimeSinceUpdate += dt;
