@@ -135,9 +135,9 @@ const addImageViewControls = (cFolder, createFromFolder) => {
         (state.viewB1 ? "B1场," : "") +
         (state.viewTorqB1eff && !state.FrameB1 ? "扭矩," : "") +
         (state.viewTorqB1eff && state.FrameB1 ? "B1影响," : "") +
-        (state.viewMx ? "Mx(实时)," : "") +
-        (state.viewMxy ? "|Mxy|(最大)," : "") +
-        (state.viewMz ? "Mz(纵向)," : "")
+        (state.viewMx ? "Mx," : "") +
+        (state.viewMxy ? "|Mxy|," : "") +
+        (state.viewMz ? "Mz," : "")
     viewStr = viewStr.slice(0, -1)
 
     guiAddFolder(
