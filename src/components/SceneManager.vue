@@ -9,7 +9,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { CONFIG, VECTORS } from '@/config'
-import { Utils } from '@/utils'
+import { cylinderMesh, shadowMesh } from '@/utils/threeTools'
 
 // 响应式引用
 const canvasRef = ref(null)
@@ -75,7 +75,7 @@ const initControls = () => {
 // 初始化 B1 指示器
 const initB1 = (radius, myShadow, unitZvec) => {
     const cylMaterial = new THREE.MeshLambertMaterial({ color: "yellow" })
-    B1cyl = Utils.cylinderMesh(
+    B1cyl = cylinderMesh(
         new THREE.Vector3(0, 0, 0),
         new THREE.Vector3(0, 1, 0),
         cylMaterial,
@@ -86,7 +86,7 @@ const initB1 = (radius, myShadow, unitZvec) => {
     scene.add(B1cyl)
 
     if (myShadow) {
-        B1shadow = Utils.shadowMesh(
+        B1shadow = shadowMesh(
             new THREE.Vector3(0, 1, 0),
             radius,
             shadowMaterial,

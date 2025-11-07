@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Utils } from "@/utils";
+import { cylinderMesh, shadowMesh } from "@/utils/threeTools";
 import { VECTORS, CONFIG } from "@/config";
 import { BlochContext } from "./BlochCore";
 
@@ -47,7 +47,7 @@ class Isoc {
     createMesh(type, color, radius, nElem) {
         let mesh;
         if (type === "cylinder") {
-            mesh = Utils.cylinderMesh(
+            mesh = cylinderMesh(
                 new THREE.Vector3(0, 0, 0),
                 new THREE.Vector3(0, 1, 0),
                 new THREE.MeshLambertMaterial({ color }),
@@ -55,7 +55,7 @@ class Isoc {
                 radius
             );
         } else if (type === "shadow") {
-            mesh = Utils.shadowMesh(
+            mesh = shadowMesh(
                 new THREE.Vector3(0, 1, 0),
                 radius,
                 new THREE.MeshBasicMaterial({ color }),

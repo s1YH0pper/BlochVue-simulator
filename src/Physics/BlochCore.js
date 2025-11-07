@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Utils } from "@/utils";
+import { thermalDrawFromLinearDist } from "@/utils/threeTools";
 import { VECTORS, CONFIG } from "@/config";
 import { useStateStore, useAppStateStore } from "@/stores/state"
 import { toRaw } from "vue";
@@ -146,7 +146,7 @@ function relaxThermal() {
         // 批量生成随机数，减少 Math.random() 调用次数
         for (rep = 1; rep < maxReps; rep++) {
             // 根据T1和nIsoc重复
-            Mz = Utils.thermalDrawFromLinearDist(B0, B0max); // cosTheta是线性分布的
+            Mz = thermalDrawFromLinearDist(B0, B0max); // cosTheta是线性分布的
             Mxy = Math.sqrt(1 - Mz * Mz);
             randomIsocIndi = Math.floor(nIsoc * Math.random());
             randomIsoc = rawIsocs[randomIsocIndi];
