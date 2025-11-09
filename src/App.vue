@@ -17,6 +17,7 @@ import { setBlochContext, PhysicalParam } from "@/Physics/BlochCore";
 import { bindRenderContext, updateB1AndIsochromats } from "@/Physics/BlochRender";
 import { useStateStore, useAppStateStore } from "@/stores/state";
 import { useSampleManager } from "@/composables/useSampleManager";
+import { useKeyboard } from "@/composables/useKeyboard";
 
 const sceneManagerRef = ref(null)
 
@@ -52,6 +53,9 @@ onMounted(() => {
     appState.trigSampleChange = true
 
     const { sampleChange } = useSampleManager(sceneContext.value, fidContext.value)
+
+    // 初始化键盘快捷键
+    useKeyboard()
 
     // 监听场景恢复事件，清理FID数据
     watch(() => appState.triggerFIDClear, (newVal) => {

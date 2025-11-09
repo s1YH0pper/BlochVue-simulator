@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { ElMessageBox } from 'element-plus';
 import ConfigSplitButton from "@/components/ConfigSplitButton.vue"; // 可复用子组件
 import { useUIEvents } from "@/composables/useUIEvents";
@@ -136,6 +136,18 @@ function handleAction(cmd) {
     buttonAction(cmd);
     emit("action", cmd);
 }
+
+watch(
+    () => appState.paused,
+    (newVal) => {
+        if (!newVal && pauseLabel.value === "▶") {
+            pauseLabel.value = "||";
+        }
+        else if (newVal && pauseLabel.value === "||") {
+            pauseLabel.value = "▶";
+        }
+    }
+);
 </script>
 
 <style scoped>
