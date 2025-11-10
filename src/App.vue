@@ -4,6 +4,9 @@
     <UIEvents />
     <el-divider />
     <FIDChart @FID-ready="handleFIDReady" />
+
+    <!-- 帮助对话框 -->
+    <HelpDialog v-model="showHelp" />
 </template>
 
 <script setup>
@@ -12,6 +15,7 @@ import SceneManager from '@/components/SceneManager.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
 import UIEvents from "@/components/UIEvents.vue";
 import FIDChart from "@/components/FIDChart.vue";
+import HelpDialog from "@/components/HelpDialog.vue";
 import { AnimationManager } from '@/manager/AnimationManager'
 import { setBlochContext, PhysicalParam } from "@/Physics/BlochCore";
 import { bindRenderContext, updateB1AndIsochromats } from "@/Physics/BlochRender";
@@ -25,6 +29,9 @@ const sceneManagerRef = ref(null)
 const sceneContext = ref(null)
 const panelContext = ref(null)
 const fidContext = ref(null)
+
+// UI状态
+const showHelp = ref(false)
 
 const state = useStateStore()
 const appState = useAppStateStore()
@@ -56,6 +63,9 @@ onMounted(() => {
 
     // 初始化键盘快捷键
     useKeyboard()
+
+    // 首次访问时显示帮助
+    showHelp.value = true
 
     // 监听场景恢复事件，清理FID数据
     watch(() => appState.triggerFIDClear, (newVal) => {
