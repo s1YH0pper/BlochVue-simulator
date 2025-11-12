@@ -62,7 +62,9 @@ onMounted(() => {
     const { sampleChange } = useSampleManager(sceneContext.value, fidContext.value)
 
     // 初始化键盘快捷键
-    useKeyboard()
+    useKeyboard({
+        onToggleHelp: () => { showHelp.value = !showHelp.value }
+    })
 
     // 首次访问时显示帮助
     showHelp.value = true

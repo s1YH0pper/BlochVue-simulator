@@ -9,6 +9,9 @@
                         <el-descriptions-item label="空格键">
                             <el-tag type="info">暂停/恢复动画</el-tag>
                         </el-descriptions-item>
+                        <el-descriptions-item label="H">
+                            <el-tag type="info">显示/隐藏此帮助面板</el-tag>
+                        </el-descriptions-item>
                         <el-descriptions-item label="F">
                             <el-tag type="info">进入/退出全屏模式</el-tag>
                         </el-descriptions-item>

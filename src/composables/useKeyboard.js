@@ -7,7 +7,7 @@ import { useAppStateStore, useStateStore } from '@/stores/state'
 export function useKeyboard(options = {}) {
     const appState = useAppStateStore()
 
-    const { } = options
+    const { onToggleHelp } = options
 
     const handleKeydown = (event) => {
         const { key, target } = event
@@ -21,6 +21,13 @@ export function useKeyboard(options = {}) {
         if (key === ' ') {
             event.preventDefault()
             appState.togglePause()
+            return
+        }
+
+        // H键：显示/隐藏帮助
+        if (key === 'h' || key === 'H') {
+            event.preventDefault()
+            if (onToggleHelp) onToggleHelp()
             return
         }
 
