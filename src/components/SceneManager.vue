@@ -22,6 +22,7 @@ let scene
 let camera
 let renderer
 let controls
+let axisHelper
 let B1cyl = null
 let B1shadow = null
 
@@ -162,6 +163,14 @@ const initShadowMaterials = (floorMat) => {
     shadowMaterials[CONFIG.nShadowColors - 1].visible = false
 }
 
+// 初始化轴辅助器
+const initAxisHelper = () => {
+    if (CONFIG.addAxisHelper) {
+        axisHelper = new THREE.AxesHelper(3)
+        scene.add(axisHelper)
+    }
+}
+
 // 添加到场景
 const addToScene = (obj) => {
     scene.add(obj)
@@ -234,11 +243,9 @@ const initScene = () => {
     // 添加地板到场景
     scene.add(floor)
 
-    // 添加轴辅助器（如果需要）
-    if (CONFIG.addAxisHelper) {
-        const axisHelper = new THREE.AxesHelper(3)
-        scene.add(axisHelper)
-    }
+    // 初始化轴辅助器
+    initAxisHelper()
+
     render()
 
     // 上报初始化完成
@@ -247,6 +254,7 @@ const initScene = () => {
         camera,
         renderer,
         controls,
+        axisHelper,
         floor,
         floorMaterial,
         floorMaterialFixed,
