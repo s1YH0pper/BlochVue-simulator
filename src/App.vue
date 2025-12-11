@@ -7,6 +7,9 @@
 
     <!-- 帮助对话框 -->
     <HelpDialog v-model="showHelp" />
+
+    <!-- 视角控制抽屉 -->
+    <OrbitControlDrawer :scene-context="sceneContext" />
 </template>
 
 <script setup>
@@ -16,6 +19,7 @@ import ControlPanel from '@/components/ControlPanel.vue'
 import UIEvents from "@/components/UIEvents.vue";
 import FIDChart from "@/components/FIDChart.vue";
 import HelpDialog from "@/components/HelpDialog.vue";
+import OrbitControlDrawer from "@/components/OrbitControlDrawer.vue";
 import { AnimationManager } from '@/manager/AnimationManager'
 import { setBlochContext, PhysicalParam } from "@/Physics/BlochCore";
 import { bindRenderContext, updateB1AndIsochromats } from "@/Physics/BlochRender";
