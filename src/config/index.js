@@ -36,7 +36,7 @@ export const CONFIG = {
     reloadSceneResetsParms: false, // 场景主按钮全部重置
     hideWhenSelected: false, // 从场景子菜单中移除所选场景标签
     doStats: false, // 帧速率统计
-    addAxisHelper: false, // 添加轴辅助器
+    addAxisHelper: true, // 添加轴辅助器
     threeShadow: false, // 让Three.js处理阴影
     myShadow: true // 手动绘制的阴影
 }
