@@ -6,8 +6,22 @@ import { useAppStateStore, useStateStore } from '@/stores/state'
  */
 export function useKeyboard(options = {}) {
     const appState = useAppStateStore()
+    const state = useStateStore()
 
     const { onToggleHelp } = options
+
+    // 数字键到场景的映射（1-9）
+    const sceneKeyMap = {
+        '1': 'Precession',      // 进动
+        '2': 'Equilibrium',      // 平衡态
+        '3': 'Inhomogeneity',    // 不均匀场
+        '4': 'Mixed matter',      // 混合物质
+        '5': 'Weak gradient',     // 弱梯度
+        '6': 'Strong gradient',   // 强梯度
+        '7': 'Structure',         // 结构
+        '8': 'Ensemble',          // 混沌态
+        '9': 'Plane',             // 平面
+    }
 
     const handleKeydown = (event) => {
         const { key, target } = event
@@ -35,6 +49,17 @@ export function useKeyboard(options = {}) {
         if (key === 'f' || key === 'F') {
             event.preventDefault()
             toggleFullscreen()
+            return
+        }
+
+        // 数字键（1-9）：切换场景
+        if (key >= '1' && key <= '9') {
+            event.preventDefault()
+            const sceneName = sceneKeyMap[key]
+            if (sceneName) {
+                state.Sample = sceneName
+                appState.trigSampleChange = true
+            }
             return
         }
     }
