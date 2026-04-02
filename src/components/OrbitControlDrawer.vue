@@ -5,6 +5,10 @@
             <div v-if="drawerVisible" class="custom-drawer">
                 <div class="drawer-content">
                     <div id="icons" class="icons">
+                        <div class="control-icon" @click="handleFloorShapeClick" :title="'地板形状: ' + floorShapeText">
+                            {{ floorShapeText }}
+                        </div>
+                        <br>
                         <div class="control-icon" @click="handleXYZViewClick" :title="'视角切换: ' + xyzViewText">
                             {{ xyzViewText }}
                         </div>
@@ -28,6 +32,7 @@
 
 <script setup>
 import { ref, toRaw } from 'vue'
+import { useStateStore, useAppStateStore } from '@/stores/state'
 
 const props = defineProps({
     sceneContext: {
@@ -37,10 +42,79 @@ const props = defineProps({
 })
 
 const drawerVisible = ref(false)
+// 与 SceneManager 一致: 图标表示「当前」地板，点击后进入下一态并与此同步
+const floorShapeText = ref('⬜')
 const xyzViewText = ref('XYZ')
+
+const state = useStateStore()
+const appState = useAppStateStore()
+
+/** 与 useSampleManager / ControlPanel 一致：浅色地板用哪种材质 */
+const resolveLightFloorMaterial = (ctx) => {
+    return appState.frameFixed && !state.FrameStat
+        ? ctx.floorMaterialFixed
+        : ctx.floorMaterial
+}
 
 const toggleDrawer = () => {
     drawerVisible.value = !drawerVisible.value
+}
+
+// 地板形状切换：⬜ 浅色矩形 → ⬛ 纯黑矩形 → ◯ 浅色圆形 → ⬜
+// 圆形与浅色矩形共用 resolveLightFloorMaterial
+// 必须始终只向场景添加一块地板
+const handleFloorShapeClick = () => {
+    if (!props.sceneContext) return
+
+    const ctx = toRaw(props.sceneContext)
+    const {
+        floorRect,
+        floorCirc,
+        floorMaterialBlack,
+        addToScene,
+        initShadowMaterials,
+        removeFromScene,
+        render
+    } = ctx
+
+    removeFromScene(floorRect)
+    removeFromScene(floorCirc)
+
+    let material
+    let next
+
+    switch (floorShapeText.value) {
+        case '⬛': // 纯黑矩形 -> 浅色圆形
+            next = '◯'
+            material = resolveLightFloorMaterial(ctx)
+            material.visible = true
+            floorCirc.material = material
+            floorCirc.visible = true
+            ctx.floor = floorCirc
+            addToScene(floorCirc)
+            break
+        case '⬜': // 浅色矩形 -> 纯黑矩形
+            next = '⬛'
+            material = floorMaterialBlack
+            material.visible = true
+            floorRect.material = material
+            floorRect.visible = true
+            ctx.floor = floorRect
+            addToScene(floorRect)
+            break
+        case '◯': // 浅色圆形 -> 浅色矩形
+            next = '⬜'
+            material = resolveLightFloorMaterial(ctx)
+            material.visible = true
+            floorRect.material = material
+            floorRect.visible = true
+            ctx.floor = floorRect
+            addToScene(floorRect)
+            break
+    }
+    initShadowMaterials(material)
+    floorShapeText.value = next
+    render?.()
 }
 
 // 相机视角切换处理
@@ -102,7 +176,7 @@ const toggleAxisHelper = () => {
     border: none;
     border-radius: 8px 0 0 8px;
     width: 32px;
-    height: 140px;
+    height: 180px;
     cursor: pointer;
     z-index: auto;
     transition: background-color 0.3s, right 0.3s;
@@ -120,7 +194,7 @@ const toggleAxisHelper = () => {
     /* 距离顶部 3/4 高度 */
     transform: translateY(-50%);
     width: 100px;
-    height: 140px;
+    height: 180px;
     background-color: #fff;
     border-radius: 8px 0 0 8px;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15);

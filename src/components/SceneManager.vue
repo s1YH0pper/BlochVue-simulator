@@ -29,7 +29,7 @@ let B1shadow = null
 // 地板属性
 let floorMaterial = new THREE.MeshLambertMaterial({ color: 0xb0b090 })
 let floorMaterialFixed = new THREE.MeshLambertMaterial({ color: 0x90b0d0 })
-let floorMaterialBlack = new THREE.MeshLambertMaterial({ color: 0x303030 })
+let floorMaterialBlack = new THREE.MeshLambertMaterial({ color: 0x000000 })
 let floorRect
 let floorCirc
 let floor
@@ -256,8 +256,11 @@ const initScene = () => {
         controls,
         axisHelper,
         floor,
+        floorRect,
+        floorCirc,
         floorMaterial,
         floorMaterialFixed,
+        floorMaterialBlack,
         shadowMaterials,
         B1cyl,
         B1shadow,
