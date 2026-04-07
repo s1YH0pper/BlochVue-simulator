@@ -3,6 +3,10 @@ import { useAppStateStore, useStateStore } from '@/stores/state'
 
 /**
  * 键盘快捷键管理系统
+ * @param {Object} options - 配置选项
+ * @param {Function} options.onToggleHelp - 切换帮助面板回调
+ * @param {Function} options.onSaveScene - 保存场景回调
+ * @param {Function} options.onRestoreScene - 恢复场景回调
  */
 export function useKeyboard(options = {}) {
     const appState = useAppStateStore()
