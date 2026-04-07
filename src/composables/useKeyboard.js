@@ -8,7 +8,7 @@ export function useKeyboard(options = {}) {
     const appState = useAppStateStore()
     const state = useStateStore()
 
-    const { onToggleHelp } = options
+    const { onToggleHelp, onSaveScene, onRestoreScene } = options
 
     // 数字键到场景的映射（1-9）
     const sceneKeyMap = {
@@ -26,6 +26,7 @@ export function useKeyboard(options = {}) {
     const handleKeydown = (event) => {
         const { key, target } = event
         const keyLower = key.toLowerCase()
+        const isCtrl = event.ctrlKey || event.metaKey
 
         // 忽略在输入框中的按键
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -50,6 +51,20 @@ export function useKeyboard(options = {}) {
         if (keyLower === 'f') {
             event.preventDefault()
             toggleFullscreen()
+            return
+        }
+
+        // Ctrl+S：保存场景
+        if (isCtrl && keyLower === 's') {
+            event.preventDefault()
+            if (onSaveScene) onSaveScene()
+            return
+        }
+
+        // Ctrl+R：恢复场景
+        if (isCtrl && keyLower === 'r') {
+            event.preventDefault()
+            if (onRestoreScene && appState.savedFlag) onRestoreScene()
             return
         }
 

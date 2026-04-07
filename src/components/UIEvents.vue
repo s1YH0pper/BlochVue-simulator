@@ -46,7 +46,7 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import ConfigSplitButton from "@/components/ConfigSplitButton.vue"; // 可复用子组件
 import { useUIEvents } from "@/composables/useUIEvents";
 import { useAppStateStore } from "@/stores/state";
@@ -67,47 +67,64 @@ function togglePause() {
     emit("action", pauseLabel.value);
 }
 
-async function toggleSave() {
+async function saveScene() {
     appState.paused = true;
-    if (saveLabel.value === "保存场景") {
-        // 保存场景
-        try {
-            await ElMessageBox.confirm(
-                '确定要保存当前场景状态吗？',
-                '保存确认',
-                {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'info',
-                    center: true
-                }
-            );
-            handleAction(saveLabel.value);
-            saveLabel.value = "恢复场景";
-            emit("action", saveLabel.value);
-        } catch {
-            appState.paused = false;
-        }
-    } else {
-        // 恢复场景
-        try {
-            await ElMessageBox.confirm(
-                '确定要恢复到之前保存的场景状态吗？当前进度将会丢失。',
-                '恢复确认',
-                {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true
-                }
-            );
-            handleAction(saveLabel.value);
-            emit("action", saveLabel.value);
-        } catch {
-            appState.paused = false;
-        }
+    try {
+        await ElMessageBox.confirm(
+            '确定要保存当前场景状态吗？',
+            '保存确认',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'info',
+                center: true
+            }
+        );
+        handleAction("保存场景");
+        saveLabel.value = "恢复场景";
+        emit("action", saveLabel.value);
+    } catch {
+        appState.paused = false;
     }
 }
+
+async function restoreScene() {
+    if (!appState.savedFlag) {
+        ElMessage.warning('当前没有可恢复的已保存场景');
+        return;
+    }
+
+    appState.paused = true;
+    try {
+        await ElMessageBox.confirm(
+            '确定要恢复到之前保存的场景状态吗？当前进度将会丢失。',
+            '恢复确认',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+                center: true
+            }
+        );
+        handleAction("恢复场景");
+        emit("action", "恢复场景");
+    } catch {
+        appState.paused = false;
+    }
+}
+
+async function toggleSave() {
+    if (saveLabel.value === "保存场景") {
+        await saveScene();
+    } else {
+        await restoreScene();
+    }
+}
+
+defineExpose({
+    saveScene,
+    restoreScene
+});
 
 async function toggleScene(cmd) {
     appState.paused = true;

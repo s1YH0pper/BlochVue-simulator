@@ -1,7 +1,7 @@
 <template>
     <SceneManager ref="sceneManagerRef" @scene-ready="handleSceneReady" />
     <ControlPanel :sceneContext="sceneContext" :fidContext="fidContext" @panel-ready="handlePanelReady" />
-    <UIEvents />
+    <UIEvents ref="uiEventsRef" />
     <el-divider />
     <FIDChart @FID-ready="handleFIDReady" />
 
@@ -28,6 +28,7 @@ import { useSampleManager } from "@/composables/useSampleManager";
 import { useKeyboard } from "@/composables/useKeyboard";
 
 const sceneManagerRef = ref(null)
+const uiEventsRef = ref(null)
 
 // 保存初始化上下文
 const sceneContext = ref(null)
@@ -67,7 +68,9 @@ onMounted(() => {
 
     // 初始化键盘快捷键
     useKeyboard({
-        onToggleHelp: () => { showHelp.value = !showHelp.value }
+        onToggleHelp: () => { showHelp.value = !showHelp.value },
+        onSaveScene: () => { uiEventsRef.value?.saveScene?.() },
+        onRestoreScene: () => { uiEventsRef.value?.restoreScene?.() }
     })
 
     // 首次访问时显示帮助
