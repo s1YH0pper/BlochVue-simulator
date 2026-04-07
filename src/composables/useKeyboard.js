@@ -25,6 +25,7 @@ export function useKeyboard(options = {}) {
 
     const handleKeydown = (event) => {
         const { key, target } = event
+        const keyLower = key.toLowerCase()
 
         // 忽略在输入框中的按键
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -39,14 +40,14 @@ export function useKeyboard(options = {}) {
         }
 
         // H键：显示/隐藏帮助
-        if (key === 'h' || key === 'H') {
+        if (keyLower === 'h') {
             event.preventDefault()
             if (onToggleHelp) onToggleHelp()
             return
         }
 
         // F键：全屏切换
-        if (key === 'f' || key === 'F') {
+        if (keyLower === 'f') {
             event.preventDefault()
             toggleFullscreen()
             return
