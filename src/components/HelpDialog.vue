@@ -15,6 +15,15 @@
                         <el-descriptions-item label="F">
                             <el-tag type="info">进入/退出全屏模式</el-tag>
                         </el-descriptions-item>
+                        <el-descriptions-item label="Ctrl + S">
+                            <el-tag type="success">保存场景快照</el-tag>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="Ctrl + R">
+                            <el-tag type="warning">恢复到已保存的场景快照</el-tag>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="数字键 1-9">
+                            <el-tag type="primary">快速切换场景</el-tag>
+                        </el-descriptions-item>
                     </el-descriptions>
                 </div>
             </el-tab-pane>
