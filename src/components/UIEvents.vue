@@ -165,6 +165,14 @@ watch(
         }
     }
 );
+
+watch(
+    () => appState.savedFlag,
+    (saved) => {
+        saveLabel.value = saved ? "恢复场景" : "保存场景";
+    },
+    { immediate: true }
+);
 </script>
 
 <style scoped>
