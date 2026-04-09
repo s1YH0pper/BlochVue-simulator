@@ -116,7 +116,7 @@
             <el-tab-pane label="关于" name="about">
                 <div class="help-section about-section">
                     <h3>BlochVue Simulator</h3>
-                    <p class="version">版本: 0.1.1</p>
+                    <p class="version">版本: 0.1.2</p>
                     <p>Vue 3 版本的 Bloch Simulator，用于 MRI / NMR 磁共振的可视化模拟。</p>
 
                     <el-divider />
