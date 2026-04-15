@@ -5,8 +5,7 @@
     <el-divider />
     <FIDChart @FID-ready="handleFIDReady" />
 
-    <!-- 帮助对话框 -->
-    <HelpDialog v-model="showHelp" />
+    <DialogManager ref="dialogManagerRef" />
 
     <!-- 视角控制抽屉 -->
     <OrbitControlDrawer :scene-context="sceneContext" />
@@ -18,7 +17,7 @@ import SceneManager from '@/components/SceneManager.vue'
 import ControlPanel from '@/components/ControlPanel.vue'
 import UIEvents from "@/components/UIEvents.vue";
 import FIDChart from "@/components/FIDChart.vue";
-import HelpDialog from "@/components/HelpDialog.vue";
+import DialogManager from "@/components/DialogManager.vue";
 import OrbitControlDrawer from "@/components/OrbitControlDrawer.vue";
 import { AnimationManager } from '@/manager/AnimationManager'
 import { setBlochContext, PhysicalParam } from "@/Physics/BlochCore";
@@ -29,14 +28,12 @@ import { useKeyboard } from "@/composables/useKeyboard";
 
 const sceneManagerRef = ref(null)
 const uiEventsRef = ref(null)
+const dialogManagerRef = ref(null)
 
 // 保存初始化上下文
 const sceneContext = ref(null)
 const panelContext = ref(null)
 const fidContext = ref(null)
-
-// UI状态
-const showHelp = ref(false)
 
 const state = useStateStore()
 const appState = useAppStateStore()
@@ -68,13 +65,10 @@ onMounted(() => {
 
     // 初始化键盘快捷键
     useKeyboard({
-        onToggleHelp: () => { showHelp.value = !showHelp.value },
+        onToggleHelp: () => { dialogManagerRef.value?.toggleHelp?.() },
         onSaveScene: () => { uiEventsRef.value?.saveScene?.() },
         onRestoreScene: () => { uiEventsRef.value?.restoreScene?.() }
     })
-
-    // 首次访问时显示帮助
-    showHelp.value = true
 
     // 监听场景恢复事件，清理FID数据
     watch(() => appState.triggerFIDClear, (newVal) => {
