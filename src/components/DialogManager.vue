@@ -1,5 +1,11 @@
 <template>
     <div class="dialog-manager">
+        <el-button class="perf-toggle-btn" circle @click="togglePerf" title="性能监控">
+            <el-icon>
+                <Histogram />
+            </el-icon>
+        </el-button>
+
         <el-button class="help-btn" circle @click="openHelp" title="帮助 (H键)">
             <el-icon>
                 <QuestionFilled />
@@ -8,14 +14,21 @@
     </div>
 
     <HelpDialog v-model="showHelp" />
+
+    <PerformanceMonitor :visible="showPerf" />
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { QuestionFilled } from '@element-plus/icons-vue'
+import { Histogram, QuestionFilled } from '@element-plus/icons-vue'
 import HelpDialog from '@/components/HelpDialog.vue'
+import PerformanceMonitor from '@/components/PerformanceMonitor.vue'
+import { useSettings } from '@/composables/useSettings'
 
 const showHelp = ref(false)
+const showPerf = ref(false)
+
+const { settings } = useSettings()
 
 function openHelp() {
     showHelp.value = true
@@ -25,9 +38,18 @@ function toggleHelp() {
     showHelp.value = !showHelp.value
 }
 
+function togglePerf() {
+    showPerf.value = !showPerf.value
+    settings.value.showFPS = showPerf.value
+}
+
 onMounted(() => {
-    // 首次访问时显示帮助
-    showHelp.value = true
+    showPerf.value = settings.value.showFPS
+    if (settings.value.showHelpOnStart && !localStorage.getItem('blochvue-hide-help')) {
+        setTimeout(() => {
+            showHelp.value = true
+        }, 1000)
+    }
 })
 
 defineExpose({
@@ -49,6 +71,11 @@ defineExpose({
 .dialog-manager :deep(.el-button:hover) {
     transform: scale(1.1);
 }
+
+.perf-toggle-btn {
+    right: 60px;
+}
+
 
 .help-btn {
     right: 10px;

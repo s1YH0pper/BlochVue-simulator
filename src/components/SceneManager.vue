@@ -9,6 +9,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { CONFIG, VECTORS } from '@/config'
+import { recordThreeSceneRender } from '@/utils/threeRenderStats'
 import { cylinderMesh, shadowMesh } from '@/utils/threeTools'
 
 // 响应式引用
@@ -192,6 +193,7 @@ const removeFromScene = (obj) => {
 const render = () => {
     if (renderer && camera) {
         renderer.render(scene, camera)
+        recordThreeSceneRender()
     }
 }
 
