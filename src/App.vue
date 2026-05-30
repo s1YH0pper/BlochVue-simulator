@@ -25,6 +25,7 @@ import { bindRenderContext, updateB1AndIsochromats } from "@/Physics/BlochRender
 import { useStateStore, useAppStateStore } from "@/stores/state";
 import { useSampleManager } from "@/composables/useSampleManager";
 import { useKeyboard } from "@/composables/useKeyboard";
+import { useSettings } from "@/composables/useSettings";
 
 const sceneManagerRef = ref(null)
 const uiEventsRef = ref(null)
@@ -37,6 +38,7 @@ const fidContext = ref(null)
 
 const state = useStateStore()
 const appState = useAppStateStore()
+const { settings } = useSettings()
 
 function handleSceneReady(ctx) {
     sceneContext.value = ctx
@@ -95,8 +97,15 @@ onMounted(() => {
         sceneContext.value.render()
     }
 
-    const animationManager = new AnimationManager(mainLoop)
+    const animationManager = new AnimationManager(mainLoop, settings.value.targetFPS)
     animationManager.start()
+
+    watch(
+        () => settings.value.targetFPS,
+        (fps) => {
+            animationManager.setTargetFps(fps)
+        }
+    )
 })
 
 </script>

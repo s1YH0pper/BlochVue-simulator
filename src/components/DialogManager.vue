@@ -11,22 +11,32 @@
                 <QuestionFilled />
             </el-icon>
         </el-button>
+
+        <el-button class="settings-btn" circle @click="showSettings = true" title="设置">
+            <el-icon>
+                <Setting />
+            </el-icon>
+        </el-button>
     </div>
 
     <HelpDialog v-model="showHelp" />
 
     <PerformanceMonitor :visible="showPerf" />
+
+    <SettingsDialog v-model="showSettings" />
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { Histogram, QuestionFilled } from '@element-plus/icons-vue'
+import { Histogram, QuestionFilled, Setting } from '@element-plus/icons-vue'
 import HelpDialog from '@/components/HelpDialog.vue'
 import PerformanceMonitor from '@/components/PerformanceMonitor.vue'
+import SettingsDialog from '@/components/SettingsDialog.vue'
 import { useSettings } from '@/composables/useSettings'
 
 const showHelp = ref(false)
 const showPerf = ref(false)
+const showSettings = ref(false)
 
 const { settings } = useSettings()
 
@@ -61,7 +71,7 @@ defineExpose({
 <style scoped>
 .dialog-manager :deep(.el-button) {
     position: fixed;
-    bottom: 10px;
+    bottom: 22px;
     z-index: 999;
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -73,11 +83,14 @@ defineExpose({
 }
 
 .perf-toggle-btn {
-    right: 60px;
+    right: 132px;
 }
 
-
 .help-btn {
-    right: 10px;
+    right: 78px;
+}
+
+.settings-btn {
+    right: 24px;
 }
 </style>
